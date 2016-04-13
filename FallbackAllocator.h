@@ -1,0 +1,44 @@
+//
+// Created by kejsty on 12.4.16.
+//
+
+#ifndef PB173_PROJECT_FALLBACKALLOCATOR_H
+#define PB173_PROJECT_FALLBACKALLOCATOR_H
+#pragma once
+
+#include "base.h"
+namespace allocators {
+
+    template<typename Primary, typename Fallback>
+    struct FallbackAllocator {
+
+        FallbackAllocator() {}
+        FallbackAllocator(const FallbackAllocator &) = delete;
+        FallbackAllocator(FallbackAllocator &&) = delete;
+        FallbackAllocator &operator=(const FallbackAllocator &) = delete;
+        FallbackAllocator &operator=(FallbackAllocator &&) = delete;
+
+
+        Block allocate(size_t size) noexcept {
+            Block ptr = primary.allocate(size);
+            return ptr ? ptr : fallback.allocate(size);
+        }
+
+        void deallocate(Block blk) noexcept {
+            if (primary.owns(blk))
+                primary.deallocate(blk);
+            else
+                fallback.deallocate(blk);
+        }
+
+        //owns nie je static
+        bool owns(Block blk) {
+            return primary.owns(blk) || fallback.owns(blk);
+        }
+
+    private:
+        Primary primary;
+        Fallback fallback;
+    };
+}
+#endif //PB173_PROJECT_FALLBACKALLOCATOR_H
