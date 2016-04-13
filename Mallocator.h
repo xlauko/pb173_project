@@ -7,21 +7,14 @@
 #pragma once
 
 #include <set>
-#include <assert.h>
+#include <cassert>
 #include "base.h"
 
 namespace allocators {
     struct Mallocator {
-        Mallocator() { }
-
-        Mallocator(const Mallocator &) = delete;
-        Mallocator(Mallocator &&) = delete;
-        Mallocator &operator=(const Mallocator &) = delete;
-        Mallocator &operator=(Mallocator &&) = delete;
-
-        Block allocate(size_t n) noexcept {
+        Block allocate(size_t n) {
             Block blk;
-            void *ptr = malloc(n);
+            void *ptr = ::operator new(n);
             if (ptr) {
                 blk.ptr = ptr;
                 blk.size = n;
@@ -34,7 +27,7 @@ namespace allocators {
             auto ptr = _allocated.find(blk.ptr);
             assert(ptr != _allocated.end());
             _allocated.erase(ptr);
-            free(blk.ptr);
+            ::operator delete(blk.ptr);
             blk.reset();
         }
 
