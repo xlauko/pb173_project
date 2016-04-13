@@ -16,21 +16,6 @@ struct Block {
     Block() : _size (0), _ptr(nullptr){}
     Block(size_t size, void *ptr) : _size(size), _ptr( ptr) {}
 
-
-    Block(const Block &)= default;
-    Block(Block && other) {
-            *this = std::move(other);
-    }
-
-    Block&operator=(const Block & other) = default;
-    Block&operator=(Block && other)  {
-        std::swap(*this, other);
-        return *this;
-
-    }
-
-    ~Block() = default;
-
     void reset(){
         _ptr = nullptr;
         _size = 0;
