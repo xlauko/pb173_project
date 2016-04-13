@@ -27,7 +27,7 @@ namespace allocators {
         }
 
         bool owns(Block &blk) {
-            return blk._ptr == nullptr && blk._size == 0;
+            return blk.ptr == nullptr && blk.size == 0;
         }
 
     };

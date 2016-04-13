@@ -29,20 +29,20 @@ namespace allocators {
             if (_top + n > _data + size || n == 0)
                 return blk;
 
-            blk._ptr = _top;
-            blk._size = n;
+            blk.ptr = _top;
+            blk.size = n;
             _top = _top + n;
             return blk;
         }
 
         void deallocate(Block &blk) {
             assert(isLast(blk));
-            _top = static_cast<char *>(blk._ptr);
+            _top = static_cast<char *>(blk.ptr);
             blk.reset();
         }
 
         bool owns(const Block &blk) {
-            return blk._ptr >= _data && blk._ptr <= _data + size;
+            return blk.ptr >= _data && blk.ptr <= _data + size;
         }
 
         bool operator==(const StackAllocator &other) {
@@ -58,7 +58,7 @@ namespace allocators {
         char *_top = _data;
 
         bool isLast(Block &blk) {
-            return static_cast<char*>(blk._ptr) + blk._size == static_cast<char *>(_top);
+            return static_cast<char*>(blk.ptr) + blk.size == static_cast<char *>(_top);
         }
     };
 }

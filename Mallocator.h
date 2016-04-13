@@ -23,23 +23,23 @@ namespace allocators {
             Block blk;
             void *ptr = malloc(n);
             if (ptr) {
-                blk._ptr = ptr;
-                blk._size = n;
+                blk.ptr = ptr;
+                blk.size = n;
                 _allocated.insert(ptr);
             }
             return blk;
         }
 
         void deallocate(Block &blk) noexcept {
-            auto ptr = _allocated.find(blk._ptr);
+            auto ptr = _allocated.find(blk.ptr);
             assert(ptr != _allocated.end());
             _allocated.erase(ptr);
-            free(blk._ptr);
+            free(blk.ptr);
             blk.reset();
         }
 
         bool owns(Block &blk) {
-            return (_allocated.find(blk._ptr) != _allocated.end());
+            return (_allocated.find(blk.ptr) != _allocated.end());
         }
 
     private:

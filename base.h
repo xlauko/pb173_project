@@ -8,28 +8,28 @@
 #include <cstddef>
 
 struct Block {
-    void* _ptr;
-    size_t _size;
+    void* ptr;
+    size_t size;
 
-    Block() : _ptr(nullptr), _size(0) {}
-    Block(void* ptr, size_t size) : _ptr(ptr), _size(size) {}
+    Block() : ptr(nullptr), size(0) {}
+    Block(void* ptr, size_t size) : ptr(ptr), size(size) {}
 
     void reset(){
-        _ptr = nullptr;
-        _size = 0;
+        ptr = nullptr;
+        size = 0;
     }
 
     bool operator== (const Block&other) {
-        return other._ptr == this->_ptr;
+        return other.ptr == this->ptr;
     }
 
     bool operator!= (const Block&other) {
-        return other._ptr != this->_ptr;
+        return other.ptr != this->ptr;
     }
 
     //to act like ptr
     operator bool(){
-        return _ptr;
+        return ptr;
     }
 
 };
