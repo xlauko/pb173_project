@@ -8,12 +8,11 @@
 #include <cstddef>
 
 struct Block {
-
+    void* _ptr;
     size_t _size;
-    void *_ptr;
 
-    Block() : _size (0), _ptr(nullptr){}
-    Block(size_t size, void *ptr) : _size(size), _ptr( ptr) {}
+    Block() : _ptr(nullptr), _size(0) {}
+    Block(void* ptr, size_t size) : _ptr(ptr), _size(size) {}
 
     void reset(){
         _ptr = nullptr;
