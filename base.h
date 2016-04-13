@@ -6,7 +6,6 @@
 #define PB173_PROJECT_BASE_H
 
 #include <cstddef>
-#include <iostream>
 
 struct Block {
 
