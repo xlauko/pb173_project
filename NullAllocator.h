@@ -6,17 +6,16 @@
 #define PB173_PROJECT_NULLALLOCATOR_H
 #pragma once
 
-#include <iostream>
+#include <cassert>
 #include "base.h"
 
 namespace allocators {
     struct NullAllocator {
-        Block allocate(size_t n) noexcept {
-            Block blk;
-            return blk;
+        Block allocate(size_t) noexcept {
+            return { nullptr, 0 };
         }
 
-        void deallocate(Block &blk, size_t n) noexcept { return; }
+        void deallocate(Block& blk, size_t) noexcept { assert(blk.ptr == nullptr); }
 
         bool operator==(const NullAllocator &) const {
             return true;
