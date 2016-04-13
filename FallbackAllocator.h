@@ -11,14 +11,6 @@ namespace allocators {
 
     template<typename Primary, typename Fallback>
     struct FallbackAllocator {
-
-        FallbackAllocator() {}
-        FallbackAllocator(const FallbackAllocator &) = delete;
-        FallbackAllocator(FallbackAllocator &&) = delete;
-        FallbackAllocator &operator=(const FallbackAllocator &) = delete;
-        FallbackAllocator &operator=(FallbackAllocator &&) = delete;
-
-
         Block allocate(size_t size) noexcept {
             Block ptr = primary.allocate(size);
             return ptr ? ptr : fallback.allocate(size);
