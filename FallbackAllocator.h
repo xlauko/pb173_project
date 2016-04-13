@@ -11,7 +11,7 @@ namespace allocators {
 
     template<typename Primary, typename Fallback>
     struct FallbackAllocator {
-        Block allocate(size_t size) noexcept {
+        Block allocate(size_t size) {
             Block ptr = primary.allocate(size);
             return ptr ? ptr : fallback.allocate(size);
         }
