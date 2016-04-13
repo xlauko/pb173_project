@@ -30,7 +30,7 @@ struct Block {
 
     //to act like ptr
     operator bool(){
-        return _size != 0;
+        return _ptr;
     }
 
 };
