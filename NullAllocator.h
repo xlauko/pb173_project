@@ -11,16 +11,6 @@
 
 namespace allocators {
     struct NullAllocator {
-        NullAllocator() { }
-
-        NullAllocator(const NullAllocator &) = default;
-
-        NullAllocator &operator=(const NullAllocator &) = default;
-
-        NullAllocator(NullAllocator &&) = default;
-
-        NullAllocator &operator=(NullAllocator &&) = default;
-
         Block allocate(size_t n) noexcept {
             Block blk;
             return blk;
