@@ -37,7 +37,9 @@ namespace allocators {
         }
 
         bool operator==(const StackAllocator&) { return false; }
-        bool operator!=(const StackAllocator&) { return false; }
+        bool operator!=(const StackAllocator& other) { 
+            return !(*this == other); 
+        }
 
     private:
         char _data[size];

@@ -21,8 +21,8 @@ namespace allocators {
             return true;
         }
 
-        bool operator!=(const NullAllocator &) const {
-            return false;
+        bool operator!=(const NullAllocator &other) const {
+            return !(*this == other);
         }
 
         bool owns(Block &blk) {
