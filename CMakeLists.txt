@@ -7,6 +7,7 @@ set(SOURCE_FILES main.cpp
     test_null.cpp 
     test_stack.cpp
     test_mallocator.cpp
+    test_fallback.cpp
     base NullAllocator StackAllocator FallbackAllocator Mallocator)
 add_executable(pb173_project ${SOURCE_FILES})
 

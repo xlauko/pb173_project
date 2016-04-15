@@ -3,16 +3,7 @@
 
 #include "StackAllocator.h"
 #include "catch.hpp"
-
-void test_block(Block& blk, int n) {
-    REQUIRE(blk.ptr != nullptr);
-    REQUIRE(blk.size == n);
-}
-
-void test_null(Block& blk) {
-    REQUIRE(blk.ptr == nullptr);
-    REQUIRE(blk.size == 0);
-}
+#include "common.h"
 
 TEST_CASE("Stack allocator allocation") {
     allocators::StackAllocator<1024> allocator;
