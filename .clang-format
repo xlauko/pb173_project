@@ -1,13 +1,13 @@
 ---
-BasedOnStyle:    LLVM,
-AccessModifierOffset: '-4'
-AlignAfterOpenBracket: AlwaysBreak,
+BasedOnStyle:    LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: AlwaysBreak
 AllowShortFunctionsOnASingleLine: Inline
-BreakConstructorInitializersBeforeComma: 'true'
-ColumnLimit: '80'
-ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
-ContinuationIndentWidth: '8',
-IndentWidth: '4'
+BreakConstructorInitializersBeforeComma: true
+ColumnLimit: 80
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ContinuationIndentWidth: 8
+IndentWidth: 4
 NamespaceIndentation: Inner
 PointerAlignment: Left
 ...
