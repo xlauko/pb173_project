@@ -25,7 +25,7 @@ namespace allocators {
             return !(*this == other);
         }
 
-        bool owns(Block &blk) {
+        bool owns(const Block &blk) const {
             return blk.ptr == nullptr && blk.size == 0;
         }
 

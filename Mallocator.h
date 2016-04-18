@@ -31,7 +31,7 @@ namespace allocators {
             blk.reset();
         }
 
-        bool owns(Block &blk) {
+        bool owns(const Block &blk) const {
             return (_allocated.find(blk.ptr) != _allocated.end());
         }
 

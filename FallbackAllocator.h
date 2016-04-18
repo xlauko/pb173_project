@@ -16,15 +16,14 @@ namespace allocators {
             return ptr ? ptr : fallback.allocate(size);
         }
 
-        void deallocate(Block blk) noexcept {
+        void deallocate(Block &blk) noexcept {
             if (primary.owns(blk))
                 primary.deallocate(blk);
             else
                 fallback.deallocate(blk);
         }
 
-        //owns nie je static
-        bool owns(Block blk) {
+        bool owns(const Block& blk) const {
             return primary.owns(blk) || fallback.owns(blk);
         }
 
