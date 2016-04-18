@@ -1,9 +1,7 @@
 //
 // Created by kejsty on 12.4.16.
 //
-
-#ifndef PB173_PROJECT_BASE_H
-#define PB173_PROJECT_BASE_H
+#pragma once
 
 #include <cstddef>
 
@@ -25,5 +23,3 @@ struct Block {
     // to act like ptr
     operator bool() { return ptr; }
 };
-
-#endif // PB173_PROJECT_BASE_H

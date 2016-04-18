@@ -1,9 +1,6 @@
 //
 // Created by kejsty on 12.4.16.
 //
-
-#ifndef PB173_PROJECT_MALLOCATOR_H
-#define PB173_PROJECT_MALLOCATOR_H
 #pragma once
 
 #include "base.h"
@@ -39,4 +36,3 @@ private:
     std::set<void*> _allocated;
 };
 }
-#endif // PB173_PROJECT_MALLOCATOR_H

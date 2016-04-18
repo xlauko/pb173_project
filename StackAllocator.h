@@ -1,9 +1,6 @@
 //
 // Created by kejsty on 12.4.16.
 //
-
-#ifndef PB173_PROJECT_STACKALLOCATOR_H
-#define PB173_PROJECT_STACKALLOCATOR_H
 #pragma once
 
 #include "base.h"
@@ -45,5 +42,3 @@ private:
     }
 };
 }
-
-#endif // PB173_PROJECT_STACKALLOCATOR_H

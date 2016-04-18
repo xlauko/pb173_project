@@ -1,9 +1,6 @@
 //
 // Created by kejsty on 12.4.16.
 //
-
-#ifndef PB173_PROJECT_NULLALLOCATOR_H
-#define PB173_PROJECT_NULLALLOCATOR_H
 #pragma once
 
 #include "base.h"
@@ -25,5 +22,3 @@ struct NullAllocator {
     }
 };
 }
-
-#endif // PB173_PROJECT_NULLALLOCATOR_H
