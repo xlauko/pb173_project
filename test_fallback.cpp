@@ -1,11 +1,12 @@
 #include "FallbackAllocator.h"
-#include "StackAllocator.h"
 #include "Mallocator.h"
+#include "StackAllocator.h"
 #include "catch.hpp"
 #include "common.h"
 
 /*TEST_CASE("Fallback allocator Test") {
-    allocators::FallbackAllocator<allocators::StackAllocator<256>, allocators::Mallocator> allocator;
+    allocators::FallbackAllocator<allocators::StackAllocator<256>,
+                                  allocators::Mallocator> allocator;
     Block block1 = allocator.allocate(250);
     Block block2 = allocator.allocate(250);
     REQUIRE(block1.size == 250);
@@ -17,7 +18,9 @@
 }*/
 
 TEST_CASE("Fallback allocator allocation") {
-    allocators::FallbackAllocator< allocators::StackAllocator<256>, allocators::StackAllocator<256>> allocator;
+    allocators::FallbackAllocator<
+            allocators::StackAllocator<256>, allocators::StackAllocator<256>>
+            allocator;
 
     SECTION("simple") {
         Block blk1 = allocator.allocate(128);
@@ -41,8 +44,10 @@ TEST_CASE("Fallback allocator allocation") {
 
 TEST_CASE("Fallback allocator deallocate") {
     const size_t stack_size = 256;
-    allocators::FallbackAllocator< allocators::StackAllocator<stack_size>,
-                                   allocators::StackAllocator<stack_size> > allocator;
+    allocators::FallbackAllocator<
+            allocators::StackAllocator<stack_size>,
+            allocators::StackAllocator<stack_size>>
+            allocator;
 
     SECTION("simple") {
         Block blk1 = allocator.allocate(256);
@@ -80,21 +85,21 @@ TEST_CASE("Fallback allocator deallocate") {
         test_block(blocks2.back(), 1);
 
         int d = dist(gen);
-        for(int i = 0; i < d && !blocks1.empty(); ++i){
+        for (int i = 0; i < d && !blocks1.empty(); ++i) {
             allocator.deallocate(blocks1.back());
             blocks1.pop_back();
         }
 
         d = dist(gen);
 
-        for(int i = 0; i < d && !blocks2.empty(); ++i) {
+        for (int i = 0; i < d && !blocks2.empty(); ++i) {
             allocator.deallocate(blocks2.back());
             blocks2.pop_back();
         }
     }
 }
 
-//TEST_CASE("Fallback allocator comparison") {
+// TEST_CASE("Fallback allocator comparison") {
 //    //TODO
 //    /*allocators::FallbackAllocator<256> fst, snd;
 //    REQUIRE_FALSE( fst == snd );

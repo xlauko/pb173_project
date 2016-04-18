@@ -11,8 +11,8 @@ TEST_CASE("Null allocator allocation") {
 
 TEST_CASE("Null allocator comparison") {
     allocators::NullAllocator fst, snd;
-    REQUIRE( fst == snd );
-    REQUIRE_FALSE( fst != snd );
+    REQUIRE(fst == snd);
+    REQUIRE_FALSE(fst != snd);
 }
 
 TEST_CASE("Null allocator owns") {

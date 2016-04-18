@@ -14,24 +14,16 @@ struct Block {
     Block() : ptr(nullptr), size(0) {}
     Block(void* ptr, size_t size) : ptr(ptr), size(size) {}
 
-    void reset(){
+    void reset() {
         ptr = nullptr;
         size = 0;
     }
 
-    bool operator== (const Block&other) {
-        return other.ptr == this->ptr;
-    }
+    bool operator==(const Block& other) { return other.ptr == this->ptr; }
+    bool operator!=(const Block& other) { return other.ptr != this->ptr; }
 
-    bool operator!= (const Block&other) {
-        return other.ptr != this->ptr;
-    }
-
-    //to act like ptr
-    operator bool(){
-        return ptr;
-    }
-
+    // to act like ptr
+    operator bool() { return ptr; }
 };
 
-#endif //PB173_PROJECT_BASE_H
+#endif // PB173_PROJECT_BASE_H

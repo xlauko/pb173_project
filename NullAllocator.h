@@ -6,30 +6,24 @@
 #define PB173_PROJECT_NULLALLOCATOR_H
 #pragma once
 
-#include <cassert>
 #include "base.h"
+#include <cassert>
 
 namespace allocators {
-    struct NullAllocator {
-        Block allocate(size_t) noexcept {
-            return { nullptr, 0 };
-        }
+struct NullAllocator {
+    Block allocate(size_t) noexcept { return {nullptr, 0}; }
 
-        void deallocate(Block& blk, size_t) noexcept { assert(blk.ptr == nullptr); }
+    void deallocate(Block& blk, size_t) noexcept { assert(blk.ptr == nullptr); }
 
-        bool operator==(const NullAllocator &) const {
-            return true;
-        }
+    bool owns(const Block& blk) const {
+        return blk.ptr == nullptr && blk.size == 0;
+    }
 
-        bool operator!=(const NullAllocator &other) const {
-            return !(*this == other);
-        }
-
-        bool owns(const Block &blk) const {
-            return blk.ptr == nullptr && blk.size == 0;
-        }
-
-    };
+    bool operator==(const NullAllocator&) const { return true; }
+    bool operator!=(const NullAllocator& other) const {
+        return !(*this == other);
+    }
+};
 }
 
-#endif //PB173_PROJECT_NULLALLOCATOR_H
+#endif // PB173_PROJECT_NULLALLOCATOR_H
