@@ -14,8 +14,8 @@ struct Block {
         size = 0;
     }
 
-    bool operator==(const Block& other) { return other.ptr == this->ptr; }
-    bool operator!=(const Block& other) { return !(other== this); }
+    bool operator==(const Block& other) const { return other.ptr == this->ptr; }
+    bool operator!=(const Block& other) const { return !(other == *this); }
 
     // to act like ptr
     operator bool() { return ptr; }
