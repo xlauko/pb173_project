@@ -8,7 +8,9 @@ template <typename Allocator, size_t min, size_t max, size_t batch_size,
 struct Freelist {
 
     ~Freelist() {
-        // todo free list
+        while (_root) {
+            _parent.deallocate(pop());
+        }
     }
 
     Block allocate(size_t n) noexcept {
