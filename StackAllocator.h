@@ -1,6 +1,3 @@
-//
-// Created by kejsty on 12.4.16.
-//
 #pragma once
 
 #include "base.h"
@@ -30,8 +27,13 @@ template <size_t size> struct StackAllocator {
         return blk.ptr >= _data && blk.ptr < _top;
     }
 
-    bool operator==(const StackAllocator&) { return false; }
-    bool operator!=(const StackAllocator& other) { return !(*this == other); }
+    bool operator==(const StackAllocator& other) const {
+        return _top == other._top;
+    }
+
+    bool operator!=(const StackAllocator& other) const {
+        return !(*this == other);
+    }
 
 private:
     char _data[size];

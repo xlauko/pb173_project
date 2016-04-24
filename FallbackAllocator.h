@@ -1,6 +1,3 @@
-//
-// Created by kejsty on 12.4.16.
-//
 #pragma once
 
 #include "base.h"
@@ -21,6 +18,14 @@ template <typename Primary, typename Fallback> struct FallbackAllocator {
 
     bool owns(const Block& blk) const {
         return primary.owns(blk) || fallback.owns(blk);
+    }
+
+    bool operator==(const FallbackAllocator& other) const {
+        return primary == other.primary && fallback == other.fallback;
+    }
+
+    bool operator!=(const FallbackAllocator& other) const {
+        return !(*this == other);
     }
 
 private:

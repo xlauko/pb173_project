@@ -1,6 +1,3 @@
-//
-// Created by kejsty on 12.4.16.
-//
 #pragma once
 
 #include "base.h"
@@ -31,6 +28,9 @@ struct Mallocator {
     bool owns(const Block& blk) const {
         return (_allocated.find(blk.ptr) != _allocated.end());
     }
+
+    bool operator==(const Mallocator& other) const { return true; }
+    bool operator!=(const Mallocator& other) const { return !(*this == other); }
 
 private:
     std::set<void*> _allocated;
