@@ -1,7 +1,7 @@
 ---
 BasedOnStyle:    LLVM
 AccessModifierOffset: -4
-AlignAfterOpenBracket: AlwaysBreak
+AlignAfterOpenBracket: true
 AllowShortFunctionsOnASingleLine: Inline
 BreakConstructorInitializersBeforeComma: true
 ColumnLimit: 80

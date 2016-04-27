@@ -1,13 +1,11 @@
-//
-// Created by kejsty on 12.4.16.
-//
 #pragma once
 
 #include "base.h"
+#include "type_classes.h"
 #include <cassert>
 
 namespace allocators {
-template <size_t size> struct StackAllocator {
+template <size_t size> struct StackAllocator : Eq {
     Block allocate(size_t n) noexcept {
         Block blk;
 
@@ -26,19 +24,14 @@ template <size_t size> struct StackAllocator {
         blk.reset();
     }
 
-    bool owns(const Block& blk) const {
-        return blk.ptr >= _data && blk.ptr < _top;
-    }
+    bool owns(const Block& blk) const { return blk.ptr >= _data && blk.ptr < _top; }
 
-    bool operator==(const StackAllocator&) { return false; }
-    bool operator!=(const StackAllocator& other) { return !(*this == other); }
+    bool operator==(const StackAllocator& b) const { return _top == b._top; }
 
 private:
     char _data[size];
     char* _top = _data;
 
-    bool isLast(Block& blk) {
-        return reinterpret_cast<char*>(blk.ptr) + blk.size == _top;
-    }
+    bool isLast(Block& blk) { return reinterpret_cast<char*>(blk.ptr) + blk.size == _top; }
 };
 }

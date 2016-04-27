@@ -1,14 +1,12 @@
-//
-// Created by kejsty on 12.4.16.
-//
 #pragma once
 
 #include "base.h"
+#include "type_classes.h"
 #include <cassert>
 #include <set>
 
 namespace allocators {
-struct Mallocator {
+struct Mallocator : Eq {
     Block allocate(size_t n) {
         Block blk;
         void* ptr = ::operator new(n);
@@ -28,9 +26,9 @@ struct Mallocator {
         blk.reset();
     }
 
-    bool owns(const Block& blk) const {
-        return (_allocated.find(blk.ptr) != _allocated.end());
-    }
+    bool owns(const Block& blk) const { return (_allocated.find(blk.ptr) != _allocated.end()); }
+
+    bool operator==(Mallocator const&) const { return true; }
 
 private:
     std::set<void*> _allocated;

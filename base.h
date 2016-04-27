@@ -1,11 +1,9 @@
-//
-// Created by kejsty on 12.4.16.
-//
 #pragma once
 
+#include "type_classes.h"
 #include <cstddef>
 
-struct Block {
+struct Block : Eq {
     void* ptr;
     size_t size;
 
@@ -17,9 +15,7 @@ struct Block {
         size = 0;
     }
 
-    bool operator==(const Block& other) { return other.ptr == this->ptr; }
-    bool operator!=(const Block& other) { return other.ptr != this->ptr; }
-
-    // to act like ptr
     operator bool() { return ptr; }
+
+    bool operator==(const Block& other) const { return other.ptr == ptr; }
 };

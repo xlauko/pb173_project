@@ -4,23 +4,9 @@
 #include "catch.hpp"
 #include "common.h"
 
-/*TEST_CASE("Fallback allocator Test") {
-    allocators::FallbackAllocator<allocators::StackAllocator<256>,
-                                  allocators::Mallocator> allocator;
-    Block block1 = allocator.allocate(250);
-    Block block2 = allocator.allocate(250);
-    REQUIRE(block1.size == 250);
-    REQUIRE(block2.size == 250);
-    REQUIRE(allocator.owns(block1));
-    REQUIRE(allocator.owns(block2));
-    allocator.deallocate(block2);
-    allocator.deallocate(block1);
-}*/
-
 TEST_CASE("Fallback allocator allocation") {
-    allocators::FallbackAllocator<
-            allocators::StackAllocator<256>, allocators::StackAllocator<256>>
-            allocator;
+    allocators::FallbackAllocator<allocators::StackAllocator<256>,
+                                  allocators::StackAllocator<256>> allocator;
 
     SECTION("simple") {
         Block blk1 = allocator.allocate(128);
@@ -44,9 +30,8 @@ TEST_CASE("Fallback allocator allocation") {
 
 TEST_CASE("Fallback allocator deallocate") {
     const size_t stack_size = 256;
-    allocators::FallbackAllocator<
-            allocators::StackAllocator<stack_size>,
-            allocators::StackAllocator<stack_size>>
+    allocators::FallbackAllocator<allocators::StackAllocator<stack_size>,
+                                  allocators::StackAllocator<stack_size>>
             allocator;
 
     SECTION("simple") {
@@ -99,9 +84,10 @@ TEST_CASE("Fallback allocator deallocate") {
     }
 }
 
-// TEST_CASE("Fallback allocator comparison") {
-//    //TODO
-//    /*allocators::FallbackAllocator<256> fst, snd;
-//    REQUIRE_FALSE( fst == snd );
-//    REQUIRE( fst != snd );*/
-//}
+TEST_CASE("Fallback allocator comparison") {
+    allocators::FallbackAllocator<allocators::StackAllocator<256>,
+                                  allocators::Mallocator> fst,
+            snd;
+    REQUIRE_FALSE(fst == snd);
+    REQUIRE(fst != snd);
+}
