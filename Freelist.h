@@ -1,11 +1,12 @@
 #pragma once
+
 #include "base.h"
+#include "type_classes.h"
 #include <cassert>
 
 namespace allocators {
-template <typename Allocator, size_t min, size_t max, size_t batch_size,
-          size_t capacity = 1024>
-struct Freelist {
+template <typename Allocator, size_t min, size_t max, size_t batch_size, size_t capacity = 1024>
+struct Freelist : Eq {
 
     ~Freelist() {
         while (_root) {
@@ -43,12 +44,9 @@ struct Freelist {
         push(blk);
     }
 
-    bool owns(const Block& blk) {
-        return blk.ptr && min <= blk.size && blk.size <= max;
-    }
+    bool owns(const Block& blk) { return blk.ptr && min <= blk.size && blk.size <= max; }
 
-    bool operator==(const Freelist&) { return false; }
-    bool operator!=(const Freelist& other) { return !(*this == other); }
+    bool operator==(const Freelist& b) const { return _root = b._root; }
 
 private:
     void push(Block& blk) {
