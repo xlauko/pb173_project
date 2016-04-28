@@ -1,5 +1,6 @@
 #include <random>
 #include <vector>
+#include <iostream>
 
 #include "StackAllocator.h"
 #include "catch.hpp"
@@ -7,6 +8,16 @@
 
 TEST_CASE("Stack allocator allocation") {
     allocators::StackAllocator<1024> allocator;
+
+    SECTION("alignment") {
+        Block block1 = allocator.allocate(1);
+        Block block2 = allocator.allocate(1);
+        REQUIRE(static_cast<char*>(block2.ptr) -
+                        static_cast<char*>(block1.ptr) ==
+                8);
+        allocator.deallocate(block2);
+        allocator.deallocate(block1);
+    }
 
     SECTION("simple") {
         Block blk1 = allocator.allocate(128);
@@ -19,7 +30,7 @@ TEST_CASE("Stack allocator allocation") {
 
     SECTION("full") {
         Block blk;
-        for (int i = 0; i < 1024; ++i) {
+        for (int i = 0; i < 1024 / 8; ++i) {
             blk = allocator.allocate(1);
             test_block(blk, 1);
         }
@@ -60,16 +71,35 @@ TEST_CASE("Stack allocator deallocate") {
         test_block(blk3, 64);
     }
 
+    SECTION("allocation chunks of 1") {
+        std::vector<Block> blocks;
+        Block block = allocator1.allocate(1);
+
+        while (block) {
+            test_block(block, 1);
+            blocks.push_back(block);
+            block = allocator1.allocate(1);
+        }
+
+        REQUIRE(blocks.size() >= (stack_size / 8));
+        while (!blocks.empty()) {
+            block = blocks.back();
+            allocator1.deallocate(block);
+            test_null(block);
+            blocks.pop_back();
+        }
+    }
+
     SECTION("complex") {
         std::mt19937 gen;
-        std::uniform_int_distribution<> dist(1, stack_size);
+        std::uniform_int_distribution<> dist(1, stack_size / 8);
 
         std::vector<Block> blocks;
 
         for (int i = 0; i < 100; ++i) {
             int alloc = dist(gen);
             for (int a = 0; a < alloc; ++a) {
-                if (blocks.size() < stack_size) {
+                if (blocks.size() < stack_size / 8) {
                     blocks.push_back(allocator1.allocate(1));
                 } else {
                     allocator1.allocate(1);
