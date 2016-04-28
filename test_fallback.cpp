@@ -16,16 +16,6 @@ TEST_CASE("Fallback allocator allocation") {
 
         REQUIRE(blk1 != blk2);
     }
-
-    SECTION("full") {
-        Block blk;
-        for (int i = 0; i < 512; ++i) {
-            blk = allocator.allocate(1);
-            test_block(blk, 1);
-        }
-        blk = allocator.allocate(1);
-        test_null(blk);
-    }
 }
 
 TEST_CASE("Fallback allocator deallocate") {
@@ -53,14 +43,14 @@ TEST_CASE("Fallback allocator deallocate") {
 
     SECTION("complex") {
         std::mt19937 gen;
-        std::uniform_int_distribution<> dist(1, stack_size);
+        std::uniform_int_distribution<> dist(1, stack_size / 8);
 
         std::vector<Block> blocks1;
         std::vector<Block> blocks2;
 
         int alloc = dist(gen) * 2;
         for (int a = 0; a < alloc; ++a) {
-            if (blocks1.size() < stack_size) {
+            if (blocks1.size() < stack_size / 8) {
                 blocks1.push_back(allocator.allocate(1));
             } else {
                 blocks2.push_back(allocator.allocate(1));
