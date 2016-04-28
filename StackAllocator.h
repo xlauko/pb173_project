@@ -6,8 +6,9 @@
 #include <memory>
 
 namespace allocators {
-template <size_t size> struct StackAllocator : Eq {
-    Block allocate(size_t n, size_t alignment = 8) noexcept {
+template <size_t size, size_t alignment = 8> struct StackAllocator : Eq {
+    Block allocate(size_t n, size_t align = alignment) noexcept {
+        assert(align == alignment);
         Block blk;
         if (_top + n > _data + size || n == 0)
             return blk;
@@ -41,7 +42,7 @@ private:
     char* _top = _data;
 
     bool isLast(Block& blk) {
-        return reinterpret_cast<char*>(blk.ptr) + blk.size == _top;
+        return reinterpret_cast<char*>(blk.ptr) + blk.size + alignment >= _top;
     }
 };
 }
