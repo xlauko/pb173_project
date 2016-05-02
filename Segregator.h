@@ -5,7 +5,7 @@
 
 namespace {
 template <size_t threshold, typename SmallAllocator, typename LargeAllocator>
-struct Segregator {
+struct Segregator : Eq {
     Block allocate(size_t n) {
         if (n <= threshold)
             return _small.allocate(n);
