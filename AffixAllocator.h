@@ -1,7 +1,3 @@
-//
-// Created by kejsty on 21.4.16.
-//
-
 #pragma once
 
 #include <assert.h>
@@ -11,7 +7,8 @@ namespace allocators {
 template <class T> struct size_trait { const static size_t value = sizeof(T); };
 template <> struct size_trait<void> { const static size_t value = 0; };
 
-template <typename Allocator, typename Prefix, typename Suffix = void> struct AffixAllocator {
+template <typename Allocator, typename Prefix, typename Suffix = void>
+struct AffixAllocator {
 
     AffixAllocator() = default;
     AffixAllocator(const AffixAllocator&) = delete;
@@ -31,18 +28,24 @@ template <typename Allocator, typename Prefix, typename Suffix = void> struct Af
 
     bool owns(const Block& blk) const { return allocator.owns(gain(blk)); }
 
-    bool operator==(const AffixAllocator& other) const { return other.allocator == allocator; }
-    bool operator!=(const AffixAllocator& other) const { return !(*this == other); }
+    bool operator==(const AffixAllocator& other) const {
+        return other.allocator == allocator;
+    }
+    bool operator!=(const AffixAllocator& other) const {
+        return !(*this == other);
+    }
 
     Prefix* prefix(const Block& blk) {
         assert(owns(blk));
-        return blk.ptr ? reinterpret_cast<Prefix*>(static_cast<char*>(blk.ptr) - prefix_size)
+        return blk.ptr ? reinterpret_cast<Prefix*>(static_cast<char*>(blk.ptr) -
+                                                   prefix_size)
                        : nullptr;
     }
 
     Suffix* suffix(const Block& blk) {
         assert(owns(blk));
-        return blk.ptr ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) + blk.size)
+        return blk.ptr ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) +
+                                                   blk.size)
                        : nullptr;
     }
 
