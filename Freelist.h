@@ -5,12 +5,14 @@
 #include <cassert>
 
 namespace allocators {
-template <typename Allocator, size_t min, size_t max, size_t batch_size, size_t capacity = 1024>
+template <typename Allocator, size_t min, size_t max, size_t batch_size,
+          size_t capacity = 1024>
 struct Freelist : Eq {
-
+    const size_t block_size = max;
     ~Freelist() {
         while (_root) {
-            _parent.deallocate(pop());
+            Block blk = pop();
+            _parent.deallocate(blk);
         }
     }
 
@@ -18,19 +20,8 @@ struct Freelist : Eq {
         if (min <= n && n <= max) {
             if (_root) {
                 return pop();
-            }
-
-            size_t block_size = max;
-
-            auto batch = _parent.allocate(block_size * batch_size);
-
-            if (batch) {
-                for (size_t i = 1; i < batch_size; ++i) {
-                    Block blk = {batch + block_size * i, block_size};
-                    push(blk);
-                }
-                Block blk = {batch, block_size};
-                return blk;
+            } else {
+                return _parent.allocate(block_size);
             }
         }
         return _parent.allocate(n);
@@ -38,22 +29,20 @@ struct Freelist : Eq {
 
     void deallocate(Block& blk) {
         assert(owns(blk));
-        if (_size > capacity)
+        if (_size > capacity || blk.size != block_size)
             return _parent.deallocate(blk);
-        assert(_size < capacity);
         push(blk);
     }
 
-    bool owns(const Block& blk) { return blk.ptr && min <= blk.size && blk.size <= max; }
+    bool owns(const Block& blk) const noexcept { return _parent.owns(blk); }
 
-    bool operator==(const Freelist& b) const { return _root = b._root; }
+    bool operator==(const Freelist& b) const { return _root == b._root; }
 
 private:
     void push(Block& blk) {
         if (_size < capacity) {
-            blk.reset();
-            auto ptr = reinterpret_cast<Node*>(blk.ptr);
-            ptr.next = _root;
+            Node* ptr = reinterpret_cast<Node*>(blk.ptr);
+            ptr->next = _root;
             _root = ptr;
             ++_size;
         }
@@ -61,16 +50,16 @@ private:
 
     Block pop() {
         assert(_root);
-        Block blk = {_root, max};
-        _root = _root.next;
+        void* ptr = _root;
+        _root = _root->next;
         --_size;
-        return blk;
+        return {ptr, block_size};
     }
 
     Allocator _parent;
     size_t _size = 0;
     struct Node {
         Node* next;
-    } _root;
+    }* _root = nullptr;
 };
 }
