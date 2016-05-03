@@ -57,6 +57,8 @@ private:
 
     Block gain(const Block& blk) const {
         Block block;
+        if (!blk.ptr)
+            return block;
         block.ptr = static_cast<char*>(blk.ptr) - prefix_size;
         block.size = blk.size + prefix_size + suffix_size;
         return block;
@@ -64,6 +66,8 @@ private:
 
     Block reduce(const Block& blk) const {
         Block block;
+        if (!blk.ptr)
+            return block;
         block.ptr = static_cast<char*>(blk.ptr) + prefix_size;
         block.size = blk.size - prefix_size - suffix_size;
         return block;
