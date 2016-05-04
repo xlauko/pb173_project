@@ -3,7 +3,7 @@
 #include "base.h"
 #include "type_classes.h"
 
-namespace {
+namespace allocators {
 template <size_t threshold, typename SmallAllocator, typename LargeAllocator>
 struct Segregator : Eq {
     Block allocate(size_t n) {
