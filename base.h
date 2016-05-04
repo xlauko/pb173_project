@@ -15,7 +15,7 @@ struct Block : Eq {
         size = 0;
     }
 
-    operator bool() { return ptr; }
+    operator bool() const { return ptr; }
 
     bool operator==(const Block& other) const { return other.ptr == ptr; }
 };
