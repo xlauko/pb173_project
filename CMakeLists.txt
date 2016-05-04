@@ -12,7 +12,8 @@ set(SOURCE_FILES main.cpp
     test_freelist.cpp
     test_segregator.cpp
     test_affix.cpp
-    base NullAllocator StackAllocator FallbackAllocator Mallocator Freelist Segregator AffixAllocator)
+    test_bucketizer.cpp
+    base NullAllocator StackAllocator FallbackAllocator Mallocator Freelist Segregator AffixAllocator Bucketizer)
 add_executable(pb173_project ${SOURCE_FILES})
 
 
