@@ -8,7 +8,10 @@ namespace allocators {
 template <typename Allocator, size_t min, size_t max, size_t batch_size,
           size_t capacity = 1024>
 struct Freelist : Eq {
-    const size_t block_size = max;
+    static_assert(
+            min <= max,
+            "Minimal size must be smaller or equal to maximal block size.");
+    static constexpr size_t block_size = max;
     ~Freelist() {
         while (_root) {
             Block blk = pop();
