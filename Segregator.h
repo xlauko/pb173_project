@@ -1,11 +1,12 @@
 #pragma once
 
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 
 namespace allocators {
 template <size_t threshold, typename SmallAllocator, typename LargeAllocator>
-struct Segregator : Eq {
+struct Segregator : Eq, UndefinedBlkSize {
 
     static_assert(threshold > 0, "Threshhold has to be greater than 0.");
 

@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 
 namespace allocators {
@@ -9,7 +10,7 @@ template <class T> struct size_trait { const static size_t value = sizeof(T); };
 template <> struct size_trait<void> { const static size_t value = 0; };
 
 template <typename Allocator, typename Prefix, typename Suffix = void>
-struct AffixAllocator : Eq {
+struct AffixAllocator : Eq, UndefinedBlkSize {
 
     AffixAllocator() = default;
     AffixAllocator(const AffixAllocator&) = delete;

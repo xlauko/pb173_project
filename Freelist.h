@@ -1,17 +1,22 @@
 #pragma once
 
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 #include <cassert>
 
 namespace allocators {
 template <typename Allocator, size_t min, size_t max, size_t batch_size,
           size_t capacity = 1024>
-struct Freelist : Eq {
-    static_assert(
-            min <= max,
-            "Minimal size must be smaller or equal to maximal block size.");
-    static constexpr size_t block_size = max;
+struct Freelist : Eq, DynamicBlkSize<min, max> {
+
+    Freelist() {}
+
+    Freelist(const Freelist&) = delete;
+    Freelist(Freelist&&) = default;
+    Freelist& operator=(const Freelist&) = delete;
+    Freelist& operator=(Freelist&&) = default;
+
     ~Freelist() {
         while (_root) {
             Block blk = pop();
@@ -20,7 +25,8 @@ struct Freelist : Eq {
     }
 
     Block allocate(size_t n) noexcept {
-        if (min <= n && n <= max) {
+        assert(min_size() == min);
+        if (min_size() <= n && n <= max_size()) {
             if (_root) {
                 return pop();
             } else {
@@ -42,6 +48,10 @@ struct Freelist : Eq {
     bool operator==(const Freelist& b) const { return _root == b._root; }
 
 private:
+    using DynamicBlkSize<min, max>::min_size;
+    using DynamicBlkSize<min, max>::max_size;
+    using DynamicBlkSize<min, max>::block_size;
+
     void push(Block& blk) {
         if (_size < capacity) {
             Node* ptr = reinterpret_cast<Node*>(blk.ptr);

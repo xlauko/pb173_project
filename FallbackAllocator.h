@@ -1,11 +1,13 @@
 #pragma once
 
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 
 namespace allocators {
 
-template <typename Primary, typename Fallback> struct FallbackAllocator : Eq {
+template <typename Primary, typename Fallback>
+struct FallbackAllocator : Eq, UndefinedBlkSize {
     Block allocate(size_t size) {
         Block ptr = primary.allocate(size);
         return ptr ? ptr : fallback.allocate(size);
@@ -18,7 +20,9 @@ template <typename Primary, typename Fallback> struct FallbackAllocator : Eq {
             fallback.deallocate(blk);
     }
 
-    bool owns(const Block& blk) const { return primary.owns(blk) || fallback.owns(blk); }
+    bool owns(const Block& blk) const {
+        return primary.owns(blk) || fallback.owns(blk);
+    }
 
     bool operator==(const FallbackAllocator& b) const {
         return primary == b.primary && fallback == b.fallback;

@@ -1,12 +1,21 @@
 #pragma once
 
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 #include <cassert>
 #include <memory>
 
 namespace allocators {
-template <size_t size, size_t alignment = 8> struct StackAllocator : Eq {
+template <size_t size, size_t alignment = 8>
+struct StackAllocator : Eq, UndefinedBlkSize {
+    StackAllocator() {}
+
+    StackAllocator(const StackAllocator&) = delete;
+    StackAllocator(StackAllocator&&) = default;
+    StackAllocator& operator=(const StackAllocator&) = delete;
+    StackAllocator& operator=(StackAllocator&&) = default;
+
     Block allocate(size_t n, size_t align = alignment) noexcept {
         assert(align == alignment);
         Block blk;

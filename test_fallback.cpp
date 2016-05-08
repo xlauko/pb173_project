@@ -2,7 +2,10 @@
 #include "Mallocator.h"
 #include "StackAllocator.h"
 #include "catch.hpp"
+#include "dynamic_size.h"
 #include "common.h"
+
+using namespace allocators;
 
 TEST_CASE("Fallback allocator allocation") {
     allocators::FallbackAllocator<allocators::StackAllocator<256>,
@@ -80,4 +83,10 @@ TEST_CASE("Fallback allocator comparison") {
             snd;
     REQUIRE_FALSE(fst == snd);
     REQUIRE(fst != snd);
+}
+
+TEST_CASE("Fallback allocator sizes") {
+    FallbackAllocator<StackAllocator<256>, Mallocator> alloc8r;
+    REQUIRE(alloc8r.max_size() == Undefined);
+    REQUIRE(alloc8r.min_size() == Undefined);
 }

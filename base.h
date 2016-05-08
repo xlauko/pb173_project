@@ -1,7 +1,6 @@
 #pragma once
 
 #include "type_classes.h"
-#include <cstddef>
 #include <memory>
 
 struct Block : Eq {

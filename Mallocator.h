@@ -1,12 +1,13 @@
 #pragma once
 
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 #include <cassert>
 #include <set>
 
 namespace allocators {
-struct Mallocator : Eq {
+struct Mallocator : Eq, UndefinedBlkSize {
     Block allocate(size_t n) {
         Block blk;
         void* ptr = ::operator new(n);
@@ -26,7 +27,9 @@ struct Mallocator : Eq {
         blk.reset();
     }
 
-    bool owns(const Block& blk) const { return (_allocated.find(blk.ptr) != _allocated.end()); }
+    bool owns(const Block& blk) const noexcept {
+        return (_allocated.find(blk.ptr) != _allocated.end());
+    }
 
     bool operator==(Mallocator const&) const { return true; }
 

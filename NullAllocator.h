@@ -1,11 +1,13 @@
 #pragma once
 
 #include "base.h"
+#include "dynamic_size.h"
 #include "type_classes.h"
 #include <cassert>
 
 namespace allocators {
-struct NullAllocator : Eq {
+
+struct NullAllocator : Eq, UndefinedBlkSize {
     Block allocate(size_t) noexcept { return {nullptr, 0}; }
 
     void deallocate(Block& blk, size_t) noexcept { assert(blk); }
