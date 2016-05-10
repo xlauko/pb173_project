@@ -56,7 +56,7 @@ TEST_CASE("Freelist allocate") {
             blks.push_back(alloc8r.allocate(64));
         }
 
-        void* ptr = blks[1].ptr;
+        void* ptr = blks[0].ptr;
         for (int i = 0; i < 1025; ++i) {
             alloc8r.deallocate(blks.back());
             blks.pop_back();
@@ -72,10 +72,4 @@ TEST_CASE("Freelist comparison") {
     Freelist<Mallocator, 32, 64, 1024> fst, snd;
     REQUIRE_FALSE(fst != snd);
     REQUIRE(fst == snd);
-}
-
-TEST_CASE("Freelist allocator sizes") {
-    Freelist<Mallocator, 32, 64, 1024> alloc8r;
-    REQUIRE(alloc8r.max_size() == 64);
-    REQUIRE(alloc8r.min_size() == 32);
 }
