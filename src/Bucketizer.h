@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include "Block.h"
 #include <cassert>
 
@@ -58,3 +58,49 @@ private:
 template <class Allocator, size_t min, size_t max, size_t step>
 const size_t Bucketizer<Allocator, min, max, step>::number_of_buckets;
 }
+*/
+
+#include "Block.h"
+
+namespace allocators {
+namespace detail {
+    template <
+            template <size_t, size_t> class Alloc, size_t min, size_t max,
+            size_t step, class... Ts>
+    struct make_buckets
+            : make_buckets<
+                      Alloc, min + step, max, step, Alloc<min, max>, Ts...> {};
+
+    template <
+            template <size_t, size_t> class Alloc, size_t min, size_t step,
+            class... Ts>
+    struct make_buckets<Alloc, min, min, step, Ts...> {
+        using type = std::tuple<Ts...>;
+    };
+
+    template <
+            template <size_t, size_t> class Alloc, size_t min, size_t max,
+            size_t step, class... Ts>
+    using make_buckets_t =
+            typename make_buckets<Alloc, min, max, step, Ts...>::type;
+} // namespace detail
+
+template <
+        template <size_t, size_t> class Allocator, size_t min, size_t max,
+        size_t step>
+struct Bucketizer : Eq {
+    static_assert(min < max, "Minimal size must be smaller than maximal.");
+    static_assert((max - min + 1) % step == 0, "Step size is incorrect.");
+
+private:
+    detail::make_buckets_t<Allocator, min, max, step> _buckets;
+
+public:
+    bool owns(Block const& b) const noexcept;
+
+    Block allocate(size_t size);
+    void dealocate(Block& b) noexcept;
+
+    bool operator==(Bucketizer const& b) const noexcept { return _buckets == b._buckets; }
+};
+} // namespace allocators

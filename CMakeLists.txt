@@ -29,5 +29,6 @@ add_executable(unit_tests
     test/test_freelist.cpp
     test/test_segregator.cpp
     test/test_affix.cpp
-    test/test_bucketizer.cpp)
+#    test/test_bucketizer.cpp
+)
 target_link_libraries(unit_tests allocators)
