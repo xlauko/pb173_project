@@ -13,7 +13,11 @@ struct Bucketizer : Eq {
 
     static constexpr size_t number_of_buckets = ((max - min + 1) / step);
 
-    Bucketizer() {}
+    Bucketizer() {
+        for (size_t i = 0; i < number_of_buckets; ++i) {
+            _buckets[i].set_bounds(i * step + min, (i + 1) * step + min - 1);
+        }
+    }
 
     Bucketizer(const Bucketizer&) = delete;
     Bucketizer(Bucketizer&&) = default;
@@ -48,7 +52,7 @@ private:
     size_t bucket_index(size_t n) const noexcept { return (n / step) - 1; }
 
     Allocator* get_bucket_allocator(size_t n) noexcept {
-        assert(min < n && n < max);
+        assert(min <= n && n < max);
         return &_buckets[bucket_index(n)];
     }
 };

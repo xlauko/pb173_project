@@ -25,7 +25,6 @@ struct Freelist : Eq, DynamicBlkSize<min, max> {
     }
 
     Block allocate(size_t n) noexcept {
-        assert(min_size() == min);
         if (min_size() <= n && n <= max_size()) {
             if (_root) {
                 return pop();
@@ -47,11 +46,11 @@ struct Freelist : Eq, DynamicBlkSize<min, max> {
 
     bool operator==(const Freelist& b) const { return _root == b._root; }
 
-private:
     using DynamicBlkSize<min, max>::min_size;
     using DynamicBlkSize<min, max>::max_size;
     using DynamicBlkSize<min, max>::block_size;
 
+private:
     void push(Block& blk) {
         if (_size < capacity) {
             Node* ptr = reinterpret_cast<Node*>(blk.ptr);

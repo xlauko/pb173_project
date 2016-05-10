@@ -45,7 +45,7 @@ template <size_t min, size_t max> struct DynamicBlkSize {
                      : max),
             dynamic_options::Determined> _max_size;
 
-    void set_min_max(size_t min_bound, size_t max_bound) {
+    void set_bounds(size_t min_bound, size_t max_bound) {
         assert(_min_size.value() == dynamic_options::Undefined);
         assert(_max_size.value() == dynamic_options::Undefined);
 
@@ -54,10 +54,11 @@ template <size_t min, size_t max> struct DynamicBlkSize {
         _max_size.value(max_bound);
     }
 
+    // todo specializace pre undefined
     size_t min_size() const noexcept { return _min_size.value(); }
 
     size_t max_size() const noexcept { return _max_size.value(); }
 };
 
 using UndefinedBlkSize = DynamicBlkSize<Undefined, Undefined>;
-}
+}:

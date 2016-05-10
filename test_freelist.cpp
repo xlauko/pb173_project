@@ -3,8 +3,10 @@
 #include "catch.hpp"
 #include "common.h"
 
+using namespace allocators;
+
 TEST_CASE("Freelist allocate") {
-    allocators::Freelist<allocators::Mallocator, 32, 64, 1024> alloc8r;
+    Freelist<Mallocator, 32, 64, 1024> alloc8r;
 
     SECTION("Simple") {
         Block blk1 = alloc8r.allocate(32);
@@ -67,7 +69,13 @@ TEST_CASE("Freelist allocate") {
 }
 
 TEST_CASE("Freelist comparison") {
-    allocators::Freelist<allocators::Mallocator, 32, 64, 1024> fst, snd;
+    Freelist<Mallocator, 32, 64, 1024> fst, snd;
     REQUIRE_FALSE(fst != snd);
     REQUIRE(fst == snd);
+}
+
+TEST_CASE("Freelist allocator sizes") {
+    Freelist<Mallocator, 32, 64, 1024> alloc8r;
+    REQUIRE(alloc8r.max_size() == 64);
+    REQUIRE(alloc8r.min_size() == 32);
 }
