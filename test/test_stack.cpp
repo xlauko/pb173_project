@@ -6,8 +6,10 @@
 #include "catch.hpp"
 #include "test_common.h"
 
+using namespace allocators;
+
 TEST_CASE("Stack allocator allocation") {
-    allocators::StackAllocator<1024> allocator;
+    StackAllocator<1024> allocator;
 
     SECTION("alignment") {
         Block block1 = allocator.allocate(1);
@@ -51,8 +53,8 @@ TEST_CASE("Stack allocator allocation") {
 
 TEST_CASE("Stack allocator deallocate") {
     const size_t stack_size = 512;
-    allocators::StackAllocator<stack_size> allocator1;
-    allocators::StackAllocator<stack_size> allocator2;
+    StackAllocator<stack_size> allocator1;
+    StackAllocator<stack_size> allocator2;
 
     SECTION("basic") {
         Block blk1 = allocator1.allocate(256);
@@ -119,7 +121,7 @@ TEST_CASE("Stack allocator deallocate") {
 }
 
 TEST_CASE("Stack allocator comparison") {
-    allocators::StackAllocator<256> fst, snd;
+    StackAllocator<256> fst, snd;
     REQUIRE_FALSE(fst == snd);
     REQUIRE(fst != snd);
 }

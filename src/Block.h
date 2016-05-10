@@ -3,24 +3,21 @@
 #include "type_classes.h"
 #include <memory>
 
+namespace allocators {
 struct Block : Eq {
     void* ptr;
     size_t size;
 
-    Block() noexcept : ptr(nullptr), size(0) {}
+    Block() : Block(nullptr, 0) {}
     Block(void* ptr, size_t size) : ptr(ptr), size(size) {}
-    Block(Block&& blk) noexcept { *this = std::move(blk); }
-    Block& operator=(Block&& blk) noexcept {
-        ptr = blk.ptr;
-        size = blk.size;
-        blk.reset();
+    Block(Block&& b) : Block() { swap(*this, b); }
+    Block(Block const&) = default;
+    ~Block() = default;
+
+    Block& operator=(Block b) noexcept {
+        swap(*this, b);
         return *this;
     }
-
-    Block& operator=(const Block& blk) noexcept = default;
-    Block(const Block& blk) noexcept = default;
-
-    ~Block() {}
 
     void reset() {
         ptr = nullptr;
@@ -32,4 +29,11 @@ struct Block : Eq {
     bool operator==(const Block& other) const {
         return other.ptr == ptr && size == other.size;
     }
+
+    friend void swap(Block& a, Block& b) noexcept {
+        using std::swap;
+        swap(a.ptr, b.ptr);
+        swap(a.size, b.size);
+    }
 };
+} // namespace allocators
