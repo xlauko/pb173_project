@@ -1,7 +1,7 @@
 #include "Freelist.h"
 #include "Mallocator.h"
 #include "catch.hpp"
-#include "common.h"
+#include "test_common.h"
 
 using namespace allocators;
 

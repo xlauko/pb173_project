@@ -1,6 +1,6 @@
 #include "Segregator.h"
 #include "catch.hpp"
-#include "common.h"
+#include "test_common.h"
 
 #include "Mallocator.h"
 #include "Freelist.h"

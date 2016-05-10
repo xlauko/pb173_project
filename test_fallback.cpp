@@ -3,7 +3,7 @@
 #include "StackAllocator.h"
 #include "catch.hpp"
 #include "dynamic_size.h"
-#include "common.h"
+#include "test_common.h"
 
 using namespace allocators;
 

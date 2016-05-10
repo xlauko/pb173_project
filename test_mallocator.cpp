@@ -1,7 +1,7 @@
 #include "Mallocator.h"
 #include "catch.hpp"
 
-#include "common.h"
+#include "test_common.h"
 
 TEST_CASE("Mallocator Test") {
     allocators::Mallocator allocator;

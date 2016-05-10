@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base.h"
+#include "Block.h"
 #include "catch.hpp"
 
 inline void test_block(Block& blk, int n) {

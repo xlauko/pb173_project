@@ -4,7 +4,7 @@
 
 #include "StackAllocator.h"
 #include "catch.hpp"
-#include "common.h"
+#include "test_common.h"
 
 TEST_CASE("Stack allocator allocation") {
     allocators::StackAllocator<1024> allocator;

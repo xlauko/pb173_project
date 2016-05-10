@@ -5,7 +5,7 @@ add_compile_options(-std=c++14)
 
 set(SOURCE_FILES main.cpp
     type_classes
-    base
+    Block
     NullAllocator
     StackAllocator
     FallbackAllocator
@@ -15,7 +15,7 @@ set(SOURCE_FILES main.cpp
     AffixAllocator
     Bucketizer
 # unit tests
-    common.h
+    test_common
     test_null.cpp 
     test_stack.cpp
     test_mallocator.cpp

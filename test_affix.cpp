@@ -5,7 +5,7 @@
 #include "catch.hpp"
 #include "AffixAllocator.h"
 #include "StackAllocator.h"
-#include "common.h"
+#include "test_common.h"
 #include "Mallocator.h"
 #include "NullAllocator.h"
 
