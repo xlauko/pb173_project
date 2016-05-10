@@ -1,9 +1,7 @@
 #pragma once
 
-#include <cassert>
 #include "Block.h"
-#include "dynamic_size.h"
-#include "type_classes.h"
+#include <cassert>
 
 namespace {
 template <typename Allocator, size_t min, size_t max, size_t step>

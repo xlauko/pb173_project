@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Block.h"
-#include "dynamic_size.h"
-#include "type_classes.h"
 #include <cassert>
 #include <set>
 
 namespace allocators {
-struct Mallocator : Eq, UndefinedBlkSize {
+struct Mallocator : Eq {
     Block allocate(size_t n) {
         Block blk;
         void* ptr = ::operator new(n);

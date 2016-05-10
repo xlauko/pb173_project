@@ -1,16 +1,14 @@
 #pragma once
 
-#include <assert.h>
 #include "Block.h"
-#include "dynamic_size.h"
-#include "type_classes.h"
+#include <cassert>
 
 namespace allocators {
 template <class T> struct size_trait { const static size_t value = sizeof(T); };
 template <> struct size_trait<void> { const static size_t value = 0; };
 
 template <typename Allocator, typename Prefix, typename Suffix = void>
-struct AffixAllocator : Eq, UndefinedBlkSize {
+struct AffixAllocator : Eq {
 
     AffixAllocator() = default;
     AffixAllocator(const AffixAllocator&) = delete;
@@ -38,15 +36,15 @@ struct AffixAllocator : Eq, UndefinedBlkSize {
 
     Prefix* prefix(const Block& blk) {
         assert(owns(blk));
-        return blk ? reinterpret_cast<Prefix*>(static_cast<char*>(blk.ptr) -
-                                               prefix_size)
+        return blk ? reinterpret_cast<Prefix*>(
+                             static_cast<char*>(blk.ptr) - prefix_size)
                    : nullptr;
     }
 
     Suffix* suffix(const Block& blk) {
         assert(owns(blk));
-        return blk ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) +
-                                               blk.size)
+        return blk ? reinterpret_cast<Suffix*>(
+                             static_cast<char*>(blk.ptr) + blk.size)
                    : nullptr;
     }
 
