@@ -5,8 +5,7 @@
 
 namespace allocators {
 
-template <typename Primary, typename Fallback>
-struct FallbackAllocator : Eq {
+template <typename Primary, typename Fallback> struct FallbackAllocator : Eq {
     Block allocate(size_t size) {
         Block ptr = primary.allocate(size);
         return ptr ? ptr : fallback.allocate(size);
@@ -19,11 +18,11 @@ struct FallbackAllocator : Eq {
             fallback.deallocate(blk);
     }
 
-    bool owns(const Block& blk) const {
+    bool owns(const Block& blk) const noexcept {
         return primary.owns(blk) || fallback.owns(blk);
     }
 
-    bool operator==(const FallbackAllocator& b) const {
+    bool operator==(const FallbackAllocator& b) const noexcept {
         return primary == b.primary && fallback == b.fallback;
     }
 

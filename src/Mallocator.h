@@ -29,7 +29,7 @@ struct Mallocator : Eq {
         return (_allocated.find(blk.ptr) != _allocated.end());
     }
 
-    bool operator==(Mallocator const&) const { return true; }
+    bool operator==(Mallocator const&) const noexcept { return true; }
 
 private:
     std::set<void*> _allocated;

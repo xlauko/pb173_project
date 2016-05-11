@@ -10,10 +10,10 @@ struct NullAllocator : Eq {
 
     void deallocate(Block& blk, size_t) noexcept { assert(blk); }
 
-    bool owns(const Block& blk) const {
+    bool owns(const Block& blk) const noexcept {
         return blk.ptr == nullptr && blk.size == 0;
     }
 
-    bool operator==(NullAllocator const&) const { return true; }
+    bool operator==(NullAllocator const&) const noexcept { return true; }
 };
 }
