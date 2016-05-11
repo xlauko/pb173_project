@@ -13,6 +13,8 @@ add_library(allocators STATIC
     src/Freelist
     src/Segregator
     src/AffixAllocator
+    src/BitSet
+    src/BitmappedBlock
     src/Bucketizer)
 set_target_properties(allocators PROPERTIES
     LINKER_LANGUAGE CXX)
