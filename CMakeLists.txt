@@ -15,7 +15,8 @@ add_library(allocators STATIC
     src/AffixAllocator
     src/BitSet
     src/BitmappedBlock
-    src/Bucketizer)
+    src/Bucketizer
+    src/StatisticCollector)
 set_target_properties(allocators PROPERTIES
     LINKER_LANGUAGE CXX)
 target_include_directories(allocators INTERFACE
@@ -32,5 +33,5 @@ add_executable(unit_tests
     test/test_segregator.cpp
     test/test_affix.cpp
 #    test/test_bucketizer.cpp
-)
+        test/test_statistic.cpp)
 target_link_libraries(unit_tests allocators)

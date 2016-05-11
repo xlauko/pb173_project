@@ -1,5 +1,7 @@
 #pragma once
-#include "base.h"
+
+#include <iostream>
+#include "Block.h"
 
 namespace allocators {
 typedef enum {
@@ -7,24 +9,16 @@ typedef enum {
     numAllocate = 2,
     numAllocateOk = 4,
     numDeallocate = 8,
-    numAll = 15,
+    numAll = 10, // means allocations + deallocations
     bytesAllocated = 16,
-    bytesHighTide = 32,
-    all = 127
+    bytesHighTide = 32
 } Options;
 
-template <typename Allocator, int Option = Options::all>
+template <typename Allocator, int Option = Options::numAllocate>
 struct StatisticCollector : Eq {
 
-    StatisticCollector()
-        : num_owns(0)
-        , num_allocate(0)
-        , num_allocate_ok(0)
-        , nun_deallocate(0)
-        , num_all(0)
-        , bytes_allocated(0)
-        , bytes_high_tide(0)
-        , all(0){};
+    StatisticCollector() : _result(0) {}
+
     StatisticCollector(const StatisticCollector&) = delete;
     StatisticCollector(StatisticCollector&&) = default;
     StatisticCollector& operator=(const StatisticCollector&) = delete;
@@ -34,66 +28,48 @@ struct StatisticCollector : Eq {
         return this->parent == other.parent;
     }
 
-    Block allocate(size_t n) {
-        inc(Options::numAllocate, num_allocate);
+    Block allocate(size_t n) noexcept {
+        inc(Options::numAllocate, _result);
         Block block = parent.allocate(n);
         if (block)
-            inc(Options::numAllocateOk, num_allocate_ok);
-        set(Options::bytesAllocated, bytes_allocated, static_cast<int>(block.size));
-        max(Options::bytesHighTide, bytes_high_tide, n);
+            inc(Options::numAllocateOk, _result);
+        add(Options::bytesAllocated, _result, static_cast<int>(block.size));
+        max(Options::bytesHighTide, _result, n);
         return block;
     }
 
-    void deallocate(Block& blk) {
-        set(Options::bytesAllocated, bytes_allocated, static_cast<int>(blk.size) * -1);
-        inc(Options::numDeallocate, nun_deallocate);
+    void deallocate(Block& blk) noexcept {
+        add(Options::bytesAllocated, _result, static_cast<int>(blk.size) * -1);
+        inc(Options::numDeallocate, _result);
         parent.deallocate(blk);
     }
 
-    bool owns(const Block& block) const {
-        inc(Options::numOwns, num_owns);
+    bool owns(const Block& block) const noexcept {
+        inc(Options::numOwns, _result);
         return parent.owns(block);
     }
 
-    size_t result() const{
-        switch (Option) {
-            case Options::numOwns :
-                return numOwns;
-            case Options::numAllocateOk :
-                return num_allocate_ok;
-            case Options::numAllocate :
-                return num_allocate;
-            case Options::numDeallocate :
-                return nun_deallocate;
-            case Options::numAll :
-                return num_allocate+nun_deallocate;
-            case Options::bytesAllocated :
-                return bytes_allocated;
-            case Options::bytesHighTide :
-                return bytes_high_tide;
-            case Options::all :
-                return num_allocate+nun_deallocate+bytes_allocated
-        }
-    }
+    size_t result() const noexcept { return _result; }
 
 private:
     Allocator parent;
-    size_t num_owns, num_allocate, num_allocate_ok, nun_deallocate, num_all,
-            bytes_allocated, bytes_high_tide, all;
-    void inc(Options option, size_t& count) const {
-        if (option || Option) {
-            ++count;
+    size_t _result;
+    void inc(Options option, const size_t& count) const {
+        if (option & Option) {
+            const_cast<size_t&>(count) = count + 1;
         }
     }
-    void set(Options option, size_t& bytes, int value) const {
-        if (option || Option) {
+
+    void add(Options option, size_t& bytes, int value) const {
+        if (option & Option) {
             bytes += value;
         }
     }
 
     void max(Options option, size_t& bites, size_t value) const {
-        bites = bites > value ? bites : value;
+        if (option & Option) {
+            bites = bites > value ? bites : value;
+        }
     }
-
 };
 }
