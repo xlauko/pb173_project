@@ -3,16 +3,34 @@ project(pb173_project)
 
 add_compile_options(-std=c++14)
 
-set(SOURCE_FILES main.cpp 
-    type_classes
-    test_null.cpp 
-    test_stack.cpp
-    test_mallocator.cpp
-    test_fallback.cpp
-    test_freelist.cpp
-    test_segregator.cpp
-    test_affix.cpp
-    base NullAllocator StackAllocator FallbackAllocator Mallocator Freelist Segregator AffixAllocator)
-add_executable(pb173_project ${SOURCE_FILES})
+add_library(allocators STATIC
+    src/type_classes
+    src/Block
+    src/NullAllocator
+    src/StackAllocator
+    src/FallbackAllocator
+    src/Mallocator
+    src/Freelist
+    src/Segregator
+    src/AffixAllocator
+    src/BitSet
+    src/BitmappedBlock
+    src/Bucketizer)
+set_target_properties(allocators PROPERTIES
+    LINKER_LANGUAGE CXX)
+target_include_directories(allocators INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
 
-
+add_executable(unit_tests
+    test/main.cpp
+    test/test_common
+    test/test_null.cpp
+    test/test_stack.cpp
+    test/test_mallocator.cpp
+    test/test_fallback.cpp
+    test/test_freelist.cpp
+    test/test_segregator.cpp
+    test/test_affix.cpp
+#    test/test_bucketizer.cpp
+)
+target_link_libraries(unit_tests allocators)

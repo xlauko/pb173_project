@@ -2,7 +2,9 @@
 #include "Mallocator.h"
 #include "StackAllocator.h"
 #include "catch.hpp"
-#include "common.h"
+#include "test_common.h"
+
+using namespace allocators;
 
 TEST_CASE("Fallback allocator allocation") {
     allocators::FallbackAllocator<allocators::StackAllocator<256>,

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "base.h"
-#include "type_classes.h"
+#include "Block.h"
 #include <cassert>
 #include <set>
 
@@ -26,7 +25,9 @@ struct Mallocator : Eq {
         blk.reset();
     }
 
-    bool owns(const Block& blk) const { return (_allocated.find(blk.ptr) != _allocated.end()); }
+    bool owns(const Block& blk) const noexcept {
+        return (_allocated.find(blk.ptr) != _allocated.end());
+    }
 
     bool operator==(Mallocator const&) const { return true; }
 

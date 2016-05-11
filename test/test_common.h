@@ -1,14 +1,14 @@
 #pragma once
 
-#include "base.h"
+#include "Block.h"
 #include "catch.hpp"
 
-inline void test_block(Block& blk, int n) {
+inline void test_block(allocators::Block& blk, int n) {
     REQUIRE(blk.ptr != nullptr);
     REQUIRE(blk.size == n);
 }
 
-inline void test_null(Block& blk) {
+inline void test_null(allocators::Block& blk) {
     REQUIRE(blk.ptr == nullptr);
     REQUIRE(blk.size == 0);
 }

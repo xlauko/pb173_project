@@ -1,14 +1,14 @@
 #pragma once
 
-#include <assert.h>
-#include "base.h"
+#include "Block.h"
+#include <cassert>
 
 namespace allocators {
 template <class T> struct size_trait { const static size_t value = sizeof(T); };
 template <> struct size_trait<void> { const static size_t value = 0; };
 
 template <typename Allocator, typename Prefix, typename Suffix = void>
-struct AffixAllocator {
+struct AffixAllocator : Eq {
 
     AffixAllocator() = default;
     AffixAllocator(const AffixAllocator&) = delete;
@@ -26,27 +26,26 @@ struct AffixAllocator {
         blk.reset();
     }
 
-    bool owns(const Block& blk) const { return allocator.owns(gain(blk)); }
+    bool owns(const Block& blk) const noexcept {
+        return blk && allocator.owns(gain(blk));
+    }
 
     bool operator==(const AffixAllocator& other) const {
         return other.allocator == allocator;
     }
-    bool operator!=(const AffixAllocator& other) const {
-        return !(*this == other);
-    }
 
     Prefix* prefix(const Block& blk) {
         assert(owns(blk));
-        return blk.ptr ? reinterpret_cast<Prefix*>(static_cast<char*>(blk.ptr) -
-                                                   prefix_size)
-                       : nullptr;
+        return blk ? reinterpret_cast<Prefix*>(
+                             static_cast<char*>(blk.ptr) - prefix_size)
+                   : nullptr;
     }
 
     Suffix* suffix(const Block& blk) {
         assert(owns(blk));
-        return blk.ptr ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) +
-                                                   blk.size)
-                       : nullptr;
+        return blk ? reinterpret_cast<Suffix*>(
+                             static_cast<char*>(blk.ptr) + blk.size)
+                   : nullptr;
     }
 
 private:
@@ -60,7 +59,7 @@ private:
 
     Block gain(const Block& blk) const {
         Block block;
-        if (!blk.ptr)
+        if (!blk)
             return block;
         block.ptr = static_cast<char*>(blk.ptr) - prefix_size;
         block.size = blk.size + prefix_size + suffix_size;
@@ -69,7 +68,7 @@ private:
 
     Block reduce(const Block& blk) const {
         Block block;
-        if (!blk.ptr)
+        if (!blk)
             return block;
         block.ptr = static_cast<char*>(blk.ptr) + prefix_size;
         block.size = blk.size - prefix_size - suffix_size;

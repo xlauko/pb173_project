@@ -1,10 +1,12 @@
 #include "Freelist.h"
 #include "Mallocator.h"
 #include "catch.hpp"
-#include "common.h"
+#include "test_common.h"
+
+using namespace allocators;
 
 TEST_CASE("Freelist allocate") {
-    allocators::Freelist<allocators::Mallocator, 32, 64, 1024> alloc8r;
+    Freelist<Mallocator, 32, 64, 1024> alloc8r;
 
     SECTION("Simple") {
         Block blk1 = alloc8r.allocate(32);
@@ -54,7 +56,7 @@ TEST_CASE("Freelist allocate") {
             blks.push_back(alloc8r.allocate(64));
         }
 
-        void* ptr = blks[1].ptr;
+        void* ptr = blks[0].ptr;
         for (int i = 0; i < 1025; ++i) {
             alloc8r.deallocate(blks.back());
             blks.pop_back();
@@ -67,7 +69,7 @@ TEST_CASE("Freelist allocate") {
 }
 
 TEST_CASE("Freelist comparison") {
-    allocators::Freelist<allocators::Mallocator, 32, 64, 1024> fst, snd;
+    Freelist<Mallocator, 32, 64, 1024> fst, snd;
     REQUIRE_FALSE(fst != snd);
     REQUIRE(fst == snd);
 }
