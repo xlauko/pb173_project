@@ -30,17 +30,19 @@ template <size_t size, size_t alignment = 8> struct StackAllocator : Eq {
         return blk;
     }
 
-    void deallocate(Block& blk) {
+    void deallocate(Block& blk) noexcept {
         assert(isLast(blk));
         _top = reinterpret_cast<char*>(blk.ptr);
         blk.reset();
     }
 
-    bool owns(const Block& blk) const {
+    bool owns(const Block& blk) const noexcept {
         return blk.ptr >= _data && blk.ptr < _top;
     }
 
-    bool operator==(const StackAllocator& b) const { return _top == b._top; }
+    bool operator==(const StackAllocator& b) const noexcept {
+        return _top == b._top;
+    }
 
 private:
     char _data[size];

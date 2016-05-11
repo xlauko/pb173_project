@@ -34,7 +34,7 @@ struct Segregator : Eq {
         else
             return _large.owns(blk);
     }
-    bool operator==(const Segregator& b) const {
+    bool operator==(const Segregator& b) const noexcept {
         return _small == b._small && _large == b._large;
     }
 

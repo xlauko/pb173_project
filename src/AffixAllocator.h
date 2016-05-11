@@ -30,21 +30,21 @@ struct AffixAllocator : Eq {
         return blk && allocator.owns(gain(blk));
     }
 
-    bool operator==(const AffixAllocator& other) const {
+    bool operator==(const AffixAllocator& other) const noexcept {
         return other.allocator == allocator;
     }
 
     Prefix* prefix(const Block& blk) {
         assert(owns(blk));
-        return blk ? reinterpret_cast<Prefix*>(
-                             static_cast<char*>(blk.ptr) - prefix_size)
+        return blk ? reinterpret_cast<Prefix*>(static_cast<char*>(blk.ptr) -
+                                               prefix_size)
                    : nullptr;
     }
 
     Suffix* suffix(const Block& blk) {
         assert(owns(blk));
-        return blk ? reinterpret_cast<Suffix*>(
-                             static_cast<char*>(blk.ptr) + blk.size)
+        return blk ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) +
+                                               blk.size)
                    : nullptr;
     }
 
