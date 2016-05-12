@@ -31,6 +31,36 @@ TEST_CASE("Segregator allocate") {
     }
 }
 
+TEST_CASE("Segregator with large null allocator") {
+    Segregator<128, Mallocator, NullAllocator> alloc8r;
+
+    SECTION("Test small") {
+        Block blk1 = alloc8r.allocate(64);
+        Block blk2 = alloc8r.allocate(142);
+        test_block(blk1, 64);
+        test_null(blk2);
+        REQUIRE(blk1 != blk2);
+
+        alloc8r.deallocate(blk1);
+        test_null(blk1);
+    }
+}
+
+TEST_CASE("Segregator with small null allocator") {
+    Segregator<128, NullAllocator, Mallocator> alloc8r;
+
+    SECTION("Test small") {
+        Block blk1 = alloc8r.allocate(64);
+        Block blk2 = alloc8r.allocate(142);
+        test_null(blk1);
+        test_block(blk2, 142);
+        REQUIRE(blk1 != blk2);
+
+        alloc8r.deallocate(blk2);
+        test_null(blk2);
+    }
+}
+
 TEST_CASE("Segregator comparison") {
     Segregator<512, Mallocator, Freelist<Mallocator, 512, 1024, 1024>> fst, snd;
     REQUIRE_FALSE(fst != snd);

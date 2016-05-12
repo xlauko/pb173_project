@@ -8,7 +8,7 @@ namespace allocators {
 struct NullAllocator : Eq {
     Block allocate(size_t) noexcept { return {nullptr, 0}; }
 
-    void deallocate(Block& blk) noexcept { assert(blk); }
+    void deallocate(Block& blk) noexcept { assert(!blk); }
 
     bool owns(const Block& blk) const noexcept {
         return blk.ptr == nullptr && blk.size == 0;
