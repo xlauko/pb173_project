@@ -6,21 +6,20 @@
 namespace allocators {
 template <class Allocator, size_t min, size_t max, size_t capacity = 1024>
 struct Freelist : Eq {
-private:
-    struct Node {
-        Node* next = nullptr;
-    };
 
-    Allocator _parent;
-    Node* _root = nullptr;
-    size_t _size = 0;
-
-public:
     Freelist() = default;
     Freelist(const Freelist&) = delete;
-    Freelist(Freelist&&) = default;
+    Freelist(Freelist&& other)
+        : _parent(std::move(other._parent))
+        , _root(other._root)
+        , _size(other._size) {
+        other._parent = nullptr;
+    };
+
     Freelist& operator=(const Freelist&) = delete;
-    Freelist& operator=(Freelist&&) = default;
+    Freelist& operator=(Freelist&&){
+            // TODO Jirka
+    };
 
     ~Freelist() {
         while (_root) {
@@ -43,11 +42,12 @@ public:
         return _parent.allocate(size);
     }
 
-    void deallocate(Block b) noexcept {
+    void deallocate(Block& b) noexcept {
         assert(owns(b));
         if (_size > capacity || !is_inside_bounds(b.size))
             return _parent.deallocate(b);
         push(b);
+        b.reset();
     }
 
     bool operator==(Freelist const& b) const noexcept {
@@ -55,6 +55,14 @@ public:
     }
 
 private:
+    struct Node {
+        Node* next = nullptr;
+    };
+
+    Allocator _parent;
+    Node* _root = nullptr;
+    size_t _size = 0;
+
     bool is_inside_bounds(size_t size) const noexcept {
         return min <= size && size <= max;
     }

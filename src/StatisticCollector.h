@@ -25,12 +25,12 @@ struct StatisticCollector : Eq {
     StatisticCollector& operator=(StatisticCollector&&) = default;
 
     bool operator==(const StatisticCollector& other) {
-        return this->parent == other.parent;
+        return this->_parent == other._parent;
     }
 
     Block allocate(size_t n) noexcept {
         inc(Options::numAllocate, _result);
-        Block block = parent.allocate(n);
+        Block block = _parent.allocate(n);
         if (block)
             inc(Options::numAllocateOk, _result);
         add(Options::bytesAllocated, _result, static_cast<int>(block.size));
@@ -41,19 +41,20 @@ struct StatisticCollector : Eq {
     void deallocate(Block& blk) noexcept {
         add(Options::bytesAllocated, _result, static_cast<int>(blk.size) * -1);
         inc(Options::numDeallocate, _result);
-        parent.deallocate(blk);
+        _parent.deallocate(blk);
     }
 
     bool owns(const Block& block) const noexcept {
         inc(Options::numOwns, _result);
-        return parent.owns(block);
+        return _parent.owns(block);
     }
 
     size_t result() const noexcept { return _result; }
 
 private:
-    Allocator parent;
+    Allocator _parent;
     size_t _result;
+
     void inc(Options option, const size_t& count) const {
         if (option & Option) {
             const_cast<size_t&>(count) = count + 1;

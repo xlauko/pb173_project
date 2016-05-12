@@ -6,8 +6,7 @@
 namespace allocators {
 template <size_t size, size_t alignment = 8> struct StackAllocator : Eq {
 
-    StackAllocator() {}
-
+    StackAllocator() = default;
     StackAllocator(const StackAllocator&) = delete;
     StackAllocator(StackAllocator&&) = default;
     StackAllocator& operator=(const StackAllocator&) = delete;

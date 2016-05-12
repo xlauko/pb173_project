@@ -10,28 +10,22 @@ template <> struct size_trait<void> { const static size_t value = 0; };
 template <typename Allocator, typename Prefix, typename Suffix = void>
 struct AffixAllocator : Eq {
 
-    AffixAllocator() = default;
-    AffixAllocator(const AffixAllocator&) = delete;
-    AffixAllocator(AffixAllocator&&) = default;
-    AffixAllocator& operator=(const AffixAllocator&) = delete;
-    AffixAllocator& operator=(AffixAllocator&&) = default;
-
     Block allocate(size_t n) noexcept {
-        return n == 0 ? Block{} : reduce(allocator.allocate(alloc_size(n)));
+        return n == 0 ? Block{} : reduce(_allocator.allocate(alloc_size(n)));
     }
 
     void deallocate(Block& blk) noexcept {
         Block block = gain(blk);
-        allocator.deallocate(block);
+        _allocator.deallocate(block);
         blk.reset();
     }
 
     bool owns(const Block& blk) const noexcept {
-        return blk && allocator.owns(gain(blk));
+        return blk && _allocator.owns(gain(blk));
     }
 
     bool operator==(const AffixAllocator& other) const noexcept {
-        return other.allocator == allocator;
+        return other._allocator == _allocator;
     }
 
     Prefix* prefix(const Block& blk) {
@@ -49,7 +43,7 @@ struct AffixAllocator : Eq {
     }
 
 private:
-    Allocator allocator;
+    Allocator _allocator;
 
     size_t alloc_size(size_t n) { return prefix_size + suffix_size + n; }
 

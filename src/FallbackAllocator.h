@@ -7,34 +7,28 @@ namespace allocators {
 
 template <typename Primary, typename Fallback> struct FallbackAllocator : Eq {
 
-    FallbackAllocator() = default;
-    FallbackAllocator(const FallbackAllocator&) = delete;
-    FallbackAllocator(FallbackAllocator&&) = default;
-    FallbackAllocator& operator=(const FallbackAllocator&) = delete;
-    FallbackAllocator& operator=(FallbackAllocator&&) = default;
-
     Block allocate(size_t size) {
-        Block ptr = primary.allocate(size);
-        return ptr ? ptr : fallback.allocate(size);
+        Block ptr = _primary.allocate(size);
+        return ptr ? ptr : _fallback.allocate(size);
     }
 
     void deallocate(Block& blk) noexcept {
-        if (primary.owns(blk))
-            primary.deallocate(blk);
+        if (_primary.owns(blk))
+            _primary.deallocate(blk);
         else
-            fallback.deallocate(blk);
+            _fallback.deallocate(blk);
     }
 
     bool owns(const Block& blk) const noexcept {
-        return primary.owns(blk) || fallback.owns(blk);
+        return _primary.owns(blk) || _fallback.owns(blk);
     }
 
     bool operator==(const FallbackAllocator& b) const noexcept {
-        return primary == b.primary && fallback == b.fallback;
+        return _primary == b._primary && _fallback == b._fallback;
     }
 
 private:
-    Primary primary;
-    Fallback fallback;
+    Primary _primary;
+    Fallback _fallback;
 };
 }

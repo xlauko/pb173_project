@@ -8,12 +8,6 @@ struct Segregator : Eq {
 
     static_assert(threshold > 0, "Threshhold has to be greater than 0.");
 
-    Segregator() = default;
-    Segregator(const Segregator&) = delete;
-    Segregator(Segregator&&) = default;
-    Segregator& operator=(const Segregator&) = delete;
-    Segregator& operator=(Segregator&&) = default;
-
     Block allocate(size_t n) {
         if (n <= threshold)
             return _small.allocate(n);
