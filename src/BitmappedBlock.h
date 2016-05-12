@@ -3,13 +3,17 @@
 
 namespace allocators {
 template <class Allocator, size_t block_size> struct BitmappedBlock : Eq {
-    BitmappedBlock(size_t size) : _data(_allocator.allocate(size * block_size)), _freelist(size) {
+    BitmappedBlock(size_t size)
+        : _data(_allocator.allocate(size * block_size)), _freelist(size) {
         if (!_data)
             throw std::bad_alloc();
     }
-    BitmappedBlock(BitmappedBlock&& b) = default;
+    BitmappedBlock(BitmappedBlock&&) = default;
     BitmappedBlock(BitmappedBlock const&) = delete;
     ~BitmappedBlock() { _allocator.dealocate(_data); }
+
+    BitmappedBlock& operator=(const BitmappedBlock&) = delete;
+    BitmappedBlock& operator=(BitmappedBlock&&) = default;
 
     Block allocate(size_t size) noexcept {
         if (size != block_size)
@@ -34,7 +38,9 @@ template <class Allocator, size_t block_size> struct BitmappedBlock : Eq {
         return _data.ptr <= blk.ptr && blk.ptr < _data.ptr + _data.size;
     }
 
-    bool operator==(BitmappedBlock const& b) const noexcept { return _data == b._data; }
+    bool operator==(BitmappedBlock const& b) const noexcept {
+        return _data == b._data;
+    }
 
 private:
     Allocator _allocator;
