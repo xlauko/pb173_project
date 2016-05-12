@@ -17,8 +17,10 @@ private:
 
 public:
     Freelist() = default;
-    Freelist(Freelist&& b) = delete;
-    Freelist(Freelist const&) = delete;
+    Freelist(const Freelist&) = delete;
+    Freelist(Freelist&&) = default;
+    Freelist& operator=(const Freelist&) = delete;
+    Freelist& operator=(Freelist&&) = default;
 
     ~Freelist() {
         while (_root) {
