@@ -3,6 +3,7 @@
 #include "StackAllocator.h"
 #include "catch.hpp"
 #include "test_common.h"
+#include <random>
 
 using namespace allocators;
 
@@ -44,7 +45,7 @@ TEST_CASE("Fallback allocator deallocate") {
     }
 
     SECTION("complex") {
-        std::mt19937 gen;
+        std::mt19937 gen(0);
         std::uniform_int_distribution<> dist(1, stack_size / 8);
 
         std::vector<Block> blocks1;
