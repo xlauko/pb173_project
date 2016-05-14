@@ -73,3 +73,25 @@ TEST_CASE("Freelist comparison") {
     REQUIRE_FALSE(fst != snd);
     REQUIRE(fst == snd);
 }
+
+//TODO: move constructor + move operator=
+//TEST_CASE("Freelist : move constructor, move operator="){
+//    Freelist<Mallocator, 32, 64, 1024> fst;
+//    Block block = fst.allocate(10);
+//    test_block(block,10);
+//    REQUIRE(fst.owns(block));
+//    Freelist<Mallocator, 32, 64, 1024> snd (std::move(fst));
+//    test_block(block,10);
+//    REQUIRE(snd.owns(block));
+////    snd = std::move(snd);
+////    test_block(block,10);
+////    REQUIRE(snd.owns(block));
+//    fst = Freelist<Mallocator, 32, 64, 1024>();
+//    snd.deallocate(block);
+//    test_null(block);
+//    block = fst.allocate(10);
+//    test_block(block,10);
+//    snd = std::move(fst);
+//    test_block(block,10);
+//    REQUIRE(snd.owns(block));
+//}
