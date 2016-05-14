@@ -8,9 +8,9 @@ template <size_t size, size_t alignment = 8> struct StackAllocator : Eq {
 
     StackAllocator() = default;
     StackAllocator(const StackAllocator&) = delete;
-    StackAllocator(StackAllocator&&) = default;
+    StackAllocator(StackAllocator&&) = delete;
     StackAllocator& operator=(const StackAllocator&) = delete;
-    StackAllocator& operator=(StackAllocator&&) = default;
+    StackAllocator& operator=(StackAllocator&&) = delete;
 
     Block allocate(size_t n, size_t align = alignment) noexcept {
         assert(align == alignment);
