@@ -54,7 +54,8 @@ add_executable(bench
     bench/main.cpp
     bench/bench_mallocator.cpp
     bench/bench_stack.cpp
-    bench/bench_freelist.cpp)
+    bench/bench_freelist.cpp
+    bench/bench_segregator.cpp)
 target_link_libraries(bench benchmark pthread)
 add_dependencies(bench google-benchmark)
 target_compile_options(bench PRIVATE -O3 -fno-omit-frame-pointer)

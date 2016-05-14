@@ -1,6 +1,5 @@
 #include <benchmark/benchmark.h>
 #include "../src/StackAllocator.h"
-#include "../src/Block.h"
 using namespace allocators;
 
 static void bench_stack(benchmark::State& s) {
