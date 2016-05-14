@@ -43,7 +43,7 @@ add_executable(unit_tests
     test/test_freelist.cpp
     test/test_segregator.cpp
     test/test_affix.cpp
-#    test/test_bucketizer.cpp
+    test/test_bucketizer.cpp
     test/test_statistic.cpp)
 target_link_libraries(unit_tests allocators)
 
@@ -51,7 +51,9 @@ target_link_libraries(unit_tests allocators)
 link_directories(${CMAKE_CURRENT_BINARY_DIR}/gb/lib)
 add_executable(bench
     bench/main.cpp
-    bench/bench_mallocator.cpp)
+    bench/bench_mallocator.cpp
+    bench/bench_stack.cpp
+    bench/bench_freelist.cpp)
 target_link_libraries(bench benchmark pthread)
 add_dependencies(bench google-benchmark)
 target_compile_options(bench PRIVATE -O3 -fno-omit-frame-pointer)
