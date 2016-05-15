@@ -1,16 +1,19 @@
-#include "Block.h"
 #include "BitSet.h"
+#include "Block.h"
+#include <cassert>
 
 namespace allocators {
 template <class Allocator, size_t block_size> struct BitmappedBlock : Eq {
     BitmappedBlock(size_t size)
-        : _data(_allocator.allocate(size * block_size)), _freelist(size) {
+        : _data(_allocator.allocate(size * block_size))
+        , _freelist(size, _allocator) {
         if (!_data)
             throw std::bad_alloc();
+        _freelist.set_true();
     }
     BitmappedBlock(BitmappedBlock&&) = default;
     BitmappedBlock(BitmappedBlock const&) = delete;
-    ~BitmappedBlock() { _allocator.dealocate(_data); }
+    ~BitmappedBlock() { _allocator.deallocate(_data); }
 
     BitmappedBlock& operator=(const BitmappedBlock&) = delete;
     BitmappedBlock& operator=(BitmappedBlock&&) = default;
@@ -24,18 +27,22 @@ template <class Allocator, size_t block_size> struct BitmappedBlock : Eq {
             return {nullptr, 0};
 
         _freelist[i].flip();
-        return {_data.ptr + (i * block_size), block_size};
+        return {static_cast<block_t*>(_data.ptr) + i, block_size};
     }
 
     void dealocate(Block& blk) noexcept {
         assert(owns(blk));
-        size_t i = static_cast<size_t>(blk.ptr - _data.ptr);
-        _freelist[i / block_size].flip();
+        auto i = static_cast<block_t*>(blk.ptr) -
+                 static_cast<block_t*>(_data.ptr);
+
+        _freelist[static_cast<size_t>(i)].flip();
         blk = {nullptr, 0};
     }
 
     bool owns(Block const& blk) const noexcept {
-        return _data.ptr <= blk.ptr && blk.ptr < _data.ptr + _data.size;
+        return _data.ptr <= blk.ptr &&
+               blk.ptr < static_cast<void*>(static_cast<block_t*>(_data.ptr) +
+                                            _data.size);
     }
 
     bool operator==(BitmappedBlock const& b) const noexcept {
@@ -43,6 +50,8 @@ template <class Allocator, size_t block_size> struct BitmappedBlock : Eq {
     }
 
 private:
+    using block_t = std::aligned_storage_t<block_size>;
+
     Allocator _allocator;
     Block _data;
     BitSet<Allocator> _freelist;
