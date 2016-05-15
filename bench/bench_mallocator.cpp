@@ -4,11 +4,24 @@
 
 using namespace allocators;
 
-static void bench_mallocator(benchmark::State& s) {
+static void bench_mallocator_alloc(benchmark::State& s) {
     Mallocator alloc;
 
     while (s.KeepRunning()) {
         Block blk = alloc.allocate(s.range_x());
+        s.PauseTiming();
+        alloc.deallocate(blk);
+        s.ResumeTiming();
+    }
+}
+
+static void bench_mallocator_dealloc(benchmark::State& s) {
+    Mallocator alloc;
+
+    while (s.KeepRunning()) {
+        s.PauseTiming();
+        Block blk = alloc.allocate(s.range_x());
+        s.ResumeTiming();
         alloc.deallocate(blk);
     }
 }
@@ -36,5 +49,6 @@ static void bench_mallocator_randomValues(benchmark::State& s) {
     }
 }
 
-BENCHMARK(bench_mallocator)->Range(8, 1024 * 1024);
+BENCHMARK(bench_mallocator_alloc)->Range(8, 1024 * 1024);
+BENCHMARK(bench_mallocator_dealloc)->Range(8, 1024 * 1024);
 BENCHMARK(bench_mallocator_randomValues)->Range(8, 1024 * 1024);

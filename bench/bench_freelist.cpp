@@ -5,11 +5,24 @@
 
 using namespace allocators;
 
-static void bench_freelist(benchmark::State& s) {
+static void bench_freelist_alloc(benchmark::State& s) {
     Freelist<Mallocator, 8, 4 * 1024> alloc;
 
     while (s.KeepRunning()) {
         Block blk = alloc.allocate(s.range_x());
+        s.PauseTiming();
+        alloc.deallocate(blk);
+        s.ResumeTiming();
+    }
+}
+
+static void bench_freelist_dealloc(benchmark::State& s) {
+    Freelist<Mallocator, 8, 4 * 1024> alloc;
+
+    while (s.KeepRunning()) {
+        s.PauseTiming();
+        Block blk = alloc.allocate(s.range_x());
+        s.ResumeTiming();
         alloc.deallocate(blk);
     }
 }
@@ -37,5 +50,6 @@ static void bench_freelist_randomValues(benchmark::State& s) {
     }
 }
 
-BENCHMARK(bench_freelist)->Range(8, 1024 * 1024);
+BENCHMARK(bench_freelist_alloc)->Range(8, 1024 * 1024);
+BENCHMARK(bench_freelist_dealloc)->Range(8, 1024 * 1024);
 BENCHMARK(bench_freelist_randomValues)->Range(8, 1024 * 1024);
