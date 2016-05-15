@@ -15,6 +15,7 @@ ExternalProject_Add(google-benchmark
 
 add_library(allocators STATIC
     src/type_classes
+    src/Allocators
     src/Block
     src/NullAllocator
     src/StackAllocator
@@ -50,6 +51,7 @@ target_link_libraries(unit_tests allocators)
 
 link_directories(${CMAKE_CURRENT_BINARY_DIR}/gb/lib)
 add_executable(bench
+    bench/bench_common
     bench/main.cpp
     bench/bench_bitmapped.cpp
     bench/bench_mallocator.cpp
