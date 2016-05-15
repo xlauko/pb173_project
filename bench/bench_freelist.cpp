@@ -1,29 +1,43 @@
 #include <benchmark/benchmark.h>
+#include "bench_common.h"
 #include "../src/Freelist.h"
 #include "../src/Mallocator.h"
 #include <random>
+#include <array>
 
 using namespace allocators;
 
 static void bench_freelist_alloc(benchmark::State& s) {
     Freelist<Mallocator, 8, 4 * 1024> alloc;
+    std::array<Block, batch_size> blocks;
 
     while (s.KeepRunning()) {
-        Block blk = alloc.allocate(s.range_x());
+        for (auto& blk : blocks) {
+            blk = alloc.allocate(s.range_x());
+        }
+
         s.PauseTiming();
-        alloc.deallocate(blk);
+        for (auto& blk : blocks) {
+            alloc.deallocate(blk);
+        }
         s.ResumeTiming();
     }
 }
 
 static void bench_freelist_dealloc(benchmark::State& s) {
     Freelist<Mallocator, 8, 4 * 1024> alloc;
+    std::array<Block, batch_size> blocks;
 
     while (s.KeepRunning()) {
         s.PauseTiming();
-        Block blk = alloc.allocate(s.range_x());
+        for (auto& blk : blocks) {
+            blk = alloc.allocate(s.range_x());
+        }
         s.ResumeTiming();
-        alloc.deallocate(blk);
+
+        for (auto& blk : blocks) {
+            alloc.deallocate(blk);
+        }
     }
 }
 
