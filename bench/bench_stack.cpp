@@ -6,7 +6,7 @@
 using namespace allocators;
 
 static void bench_stack_alloc(benchmark::State& s) {
-    StackAllocator<1024 * 1024 * batch_size, 8> alloc;
+    StackAllocator<1024 * 32 * batch_size, 8> alloc;
     std::array<Block, batch_size> blocks;
 
     while (s.KeepRunning()) {
@@ -22,7 +22,7 @@ static void bench_stack_alloc(benchmark::State& s) {
 }
 
 static void bench_stack_dealloc(benchmark::State& s) {
-    StackAllocator<1024 * 1024 * batch_size, 8> alloc;
+    StackAllocator<1024 * 32 * batch_size, 8> alloc;
     std::array<Block, batch_size> blocks;
 
     while (s.KeepRunning()) {
@@ -38,5 +38,5 @@ static void bench_stack_dealloc(benchmark::State& s) {
     }
 }
 
-BENCHMARK(bench_stack_alloc)->Range(8, 1024 * 1024);
-BENCHMARK(bench_stack_dealloc)->Range(8, 1024 * 1024);
+BENCHMARK(bench_stack_alloc)->Range(8, 1024 * 32);
+BENCHMARK(bench_stack_dealloc)->Range(8, 1024 * 32);
