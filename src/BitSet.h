@@ -71,12 +71,15 @@ public:
     }
 
     reference operator[](size_t i) noexcept {
-        return {data_as_blocks()[i / bits_in_block], 1u << (i % bits_in_block)};
+        return {data_as_blocks()[i / bits_in_block],
+                std::uintmax_t(1u)
+                        << (bits_in_block - 1 - (i % bits_in_block))};
     }
 
     bool operator[](size_t i) const noexcept {
         return data_as_blocks()[i / bits_in_block] &
-               (1u << (i % bits_in_block));
+               (std::uintmax_t(1u)
+                << (bits_in_block - 1 - (i % bits_in_block)));
     }
 
     std::size_t find_first() const noexcept {
@@ -91,13 +94,16 @@ public:
         }
         if (beg == end)
             return _size;
-        return i * bits_in_block +
-               (bits_in_block - 1 - detail::count_leading_zeros(*beg));
+        return i * bits_in_block + detail::count_leading_zeros(*beg);
     }
 
-    void set_false() { std::fill_n(data_as_blocks(), size_in_blocks(), 0u); }
+    void set_false() {
+        std::fill_n(data_as_blocks(), size_in_blocks(), std::uintmax_t(0u));
+    }
 
-    void set_true() { std::fill_n(data_as_blocks(), size_in_blocks(), 0u - 1); }
+    void set_true() {
+        std::fill_n(data_as_blocks(), size_in_blocks(), ~std::uintmax_t(0u));
+    }
 
 private:
     std::uintmax_t const* data_as_blocks() const noexcept {
