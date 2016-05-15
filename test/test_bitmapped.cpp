@@ -35,13 +35,13 @@ TEST_CASE("Bitmapped") {
     }
 
     test_block(a, 64);
-    alloc.dealocate(a);
+    alloc.deallocate(a);
     test_null(a);
 
     REQUIRE_FALSE(alloc.owns(a));
 
     for (auto& block : blocks) {
         test_block(block, 64);
-        alloc.dealocate(block);
+        alloc.deallocate(block);
     }
 }

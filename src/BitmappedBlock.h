@@ -30,7 +30,7 @@ template <class Allocator, size_t block_size> struct BitmappedBlock : Eq {
         return {static_cast<block_t*>(_data.ptr) + i, block_size};
     }
 
-    void dealocate(Block& blk) noexcept {
+    void deallocate(Block& blk) noexcept {
         assert(owns(blk));
         auto i = static_cast<block_t*>(blk.ptr) -
                  static_cast<block_t*>(_data.ptr);
