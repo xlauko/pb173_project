@@ -1,6 +1,8 @@
 #include <benchmark/benchmark.h>
 #include "bench_common.h"
 #include "../src/StackAllocator.h"
+#include <iostream>
+
 using namespace allocators;
 
 static void bench_stack_alloc(benchmark::State& s) {
@@ -11,10 +13,9 @@ static void bench_stack_alloc(benchmark::State& s) {
         for (auto& blk : blocks) {
             blk = alloc.allocate(s.range_x());
         }
-
         s.PauseTiming();
-        for (auto& blk : blocks) {
-            alloc.deallocate(blk);
+        for (size_t i = batch_size; i-- > 0;) {
+            alloc.deallocate(blocks[i]);
         }
         s.ResumeTiming();
     }
@@ -31,8 +32,8 @@ static void bench_stack_dealloc(benchmark::State& s) {
         }
         s.ResumeTiming();
 
-        for (auto& blk : blocks) {
-            alloc.deallocate(blk);
+        for (size_t i = batch_size; i-- > 0;) {
+            alloc.deallocate(blocks[i]);
         }
     }
 }
