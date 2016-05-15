@@ -51,6 +51,7 @@ target_link_libraries(unit_tests allocators)
 link_directories(${CMAKE_CURRENT_BINARY_DIR}/gb/lib)
 add_executable(bench
     bench/main.cpp
+    bench/bench_bitmapped.cpp
     bench/bench_mallocator.cpp
     bench/bench_stack.cpp
     bench/bench_freelist.cpp
