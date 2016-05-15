@@ -1,7 +1,3 @@
-//
-// Created by kejsty on 24.4.16.
-//
-
 #include "catch.hpp"
 #include "AffixAllocator.h"
 #include "StackAllocator.h"

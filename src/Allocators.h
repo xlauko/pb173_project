@@ -3,8 +3,7 @@
 #include "Block.h"
 
 #include "AffixAllocator.h"
-//#include "BitmappedBlock.h"
-//#include "Bucketizer.h"
+#include "BitmappedBlock.h"
 #include "FallbackAllocator.h"
 #include "Freelist.h"
 #include "Mallocator.h"
