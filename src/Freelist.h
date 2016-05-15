@@ -18,9 +18,7 @@ struct Freelist : Eq {
     }
 
     Freelist& operator=(const Freelist&) = delete;
-    Freelist& operator=(Freelist&&){
-            // TODO Jirka
-    }
+    Freelist& operator=(Freelist&&) = delete;
 
     ~Freelist() {
         while (_root) {
@@ -44,7 +42,7 @@ struct Freelist : Eq {
     }
 
     void deallocate(Block& b) noexcept {
-        assert(owns(b));
+        //assert(owns(b));
         if (_size > capacity || !is_inside_bounds(b.size))
             return _parent.deallocate(b);
         push(b);
