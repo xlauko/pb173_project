@@ -13,13 +13,14 @@ struct Freelist : Eq {
         : _parent(std::move(other._parent))
         , _root(other._root)
         , _size(other._size) {
-        other._parent = nullptr;
-    };
+        other._root = nullptr;
+        other._size = 0;
+    }
 
     Freelist& operator=(const Freelist&) = delete;
     Freelist& operator=(Freelist&&){
             // TODO Jirka
-    };
+    }
 
     ~Freelist() {
         while (_root) {
