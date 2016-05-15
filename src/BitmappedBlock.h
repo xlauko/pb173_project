@@ -1,3 +1,5 @@
+#pragma once
+
 #include "BitSet.h"
 #include "Block.h"
 #include <cassert>

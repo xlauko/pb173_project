@@ -6,7 +6,7 @@
 
 namespace allocators {
 namespace detail {
-    unsigned count_leading_zeros(uint32_t x) {
+    inline unsigned count_leading_zeros(uint32_t x) {
 #ifdef __GNUC__
         return static_cast<unsigned>(__builtin_clz(x));
 #elif _MSC_VER
@@ -14,7 +14,7 @@ namespace detail {
 #endif
     }
 
-    unsigned count_leading_zeros(uint64_t x) {
+    inline unsigned count_leading_zeros(uint64_t x) {
 #ifdef __GNUC__
         return static_cast<unsigned>(__builtin_clzl(x));
 #elif _MSC_VER
