@@ -64,8 +64,6 @@ private:
 }
 ```
 
-- Owns- MDFINAE
-
 ## FallbackAllocator - owns
 
 ```cpp
