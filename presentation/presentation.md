@@ -1,6 +1,6 @@
 ---
 title: "Composable Allocators"
-author: Henruch Lauko, Katarína Kejstová, Jíří Novotný
+author: Henrich Lauko, Katarína Kejstová, Jíří Novotný
 output:
 beamer_presentation:
 theme: "boxes"
