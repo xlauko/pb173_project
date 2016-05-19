@@ -1,7 +1,6 @@
 ---
-title: "Allocators"
-subtitle: TODO
-author: Henruch Lauko, Jíří Novotný, Katarína Kejstová
+title: "Composable Allocators"
+author: Henruch Lauko, Katarína Kejstová, Jíří Novotný
 output:
 beamer_presentation:
 theme: "boxes"
@@ -13,43 +12,57 @@ fontsize: 10pt
 
 ## Motivation
 
--
--  
--
+```cpp
+    void* malloc(size_t size);
+    void free(void* ptr)
+```
+- saving information about size
+- size management adds difficulties to allocator design
 
-## C++ Allocators API 
+###Andrei Alexandreiscu recomendation
 
-- allocated memory representation:
 ```cpp
 struct Block { void* ptr; size_t size; }
 ```
+## std::alocator
 
-- requirements on allocator:
+- big fail - nobody knows how to use
+- "Making Allocators Work", CppCon 2014
+
+### Some oddities 
+- type as parameter (allocator is not a factory)
+- `rebind<U>::other`
+- allocator should work only with blocks
+
+## C++ Allocators
+- we want allocator to be composable
+- specialized by size
+
+- our API requirements on allocator:
 ```cpp
 Block allocate(size_t)
 void deallocate(Block)
 bool owns(Block)
 ```
 
-## Allocators
+## Base Allocators
 
 ```cpp
 NullAllocator
 
 Mallocator
 
-StackAllocator<size_t size, size_t alignment>
+StackAllocator<size_t size>
+```
 
+## Composable Allocators
+
+```cpp
 FallbackAllocator<class Primary, class Fallback>
 
 Freelist<class Allocator, size_t min,
          size_t max, size_t capacity>
 
-```
-
-## Allocators
-
-```cpp
 Segregator<size_t threshold, 
            class SmallAllocator, class LargeAllocator>
 
@@ -60,11 +73,6 @@ StatisticCollector<class Allocator, int Option>
 
 BitmappedBlock<class Allocator, size_t block_size>
 ```
-
-## Freelist problems
-- TODO problems
-
-## BitmappedBlock
 
 ## Modularity -- composability
 
@@ -81,7 +89,5 @@ using Allocator =
             Mallocator
         >;
 ```
-
-## Example
 
 ## Benchmarks
