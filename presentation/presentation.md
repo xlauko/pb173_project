@@ -90,4 +90,10 @@ using Allocator =
         >;
 ```
 
-## Benchmarks
+## Benchmarks Allocation
+
+![allocation](allocation.png)
+
+## Benchmarks Deallocation
+
+![deallocation](deallocation.png)
