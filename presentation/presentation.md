@@ -33,86 +33,43 @@ bool owns(Block)
 
 ## Allocators
 
-- NullAllocator
-- Mallocator
-- StackAllocator
-
-- FallbackAllocator
-- Freelist
-- Segregator
-- AffixAllocator
-- StatisticCollector
-- BitmappedBlock
-
-## StackAllocator 
-
-- alignment?
-
-## FallbackAllocator
-
 ```cpp
-template <typename Primary, typename Fallback> 
-struct FallbackAllocator {
-    Block allocate(size_t size) {
-        Block ptr = _primary.allocate(size);
-        return ptr ? ptr : _fallback.allocate(size);
-    }
-    ...
-private:
-    Primary _primary;
-    Fallback _fallback;
-}
+NullAllocator
+
+Mallocator
+
+StackAllocator<size_t size, size_t alignment>
+
+FallbackAllocator<class Primary, class Fallback>
+
+Freelist<class Allocator, size_t min,
+         size_t max, size_t capacity>
+
 ```
 
-## FallbackAllocator - owns
+## Allocators
 
 ```cpp
-template <typename P, typename F>
-bool FallbackAllocator<P,F>::owns(const Block& blk) {
-    return _primary.owns(blk) || _fallback.owns(blk);
-}
-```
+Segregator<size_t threshold, 
+           class SmallAllocator, class LargeAllocator>
 
-- relies on MDFINAE -- method definition failure is not an error
+AffixAllocator<class Allocator, 
+               typename Prefix, typename Suffix>
 
+StatisticCollector<class Allocator, int Option>
 
-## Freelist
-
-```cpp
-template <class A, size_t min, size_t max, size_t capacity>
-struct Freelist {
-    Block allocate(size_t size) {
-        if (is_inside_bounds(size)) {
-            if (_root)
-                return pop();
-            else
-                return _parent.allocate(max);
-        }
-        return _parent.allocate(size);
-    }
-    ...
-private:
-    A _parent;
-    struct Node{ Node* next} _root;
-}
+BitmappedBlock<class Allocator, size_t block_size>
 ```
 
 ## Freelist problems
 - TODO problems
 
-## Segregator
+## BitmappedBlock
 
-```cpp
-template <size_t threshold, 
-    typename SmallAllocator, 
-    typename LargeAllocator>
-struct Segregator;
-```
+## Modularity -- composability
 
-- sizes $\leq$ threshold are managed by SmallAllocator
-- others by LargeAllocator
-
-## Composability
+- composition of allocators, specialized by block sizes
+- arrays, lists, trees of allocators
 
 ```cpp
 using Allocator =
@@ -124,15 +81,6 @@ using Allocator =
             Mallocator
         >;
 ```
-
-## AffixAllocator
-
-## BitmappedBlock
-
-## Modularity - composability
-
-- composition of allocators, specialized by block sizes
-- arrays, lists, trees of allocators
 
 ## Example
 
