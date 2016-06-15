@@ -19,17 +19,17 @@ auto operator!=(const T& a, const T& b)
 template <class T>
 auto operator>(const T& a, const T& b)
         -> std::enable_if_t<std::is_base_of_v<Ord, T>, bool> {
-    return !(a < b) && a != b;
+    return b < a;
 }
 
 template <class T>
 auto operator<=(const T& a, const T& b)
         -> std::enable_if_t<std::is_base_of_v<Ord, T>, bool> {
-    return a < b && a == b;
+    return !(b < a);
 }
 
 template <class T>
 auto operator>=(const T& a, const T& b)
         -> std::enable_if_t<std::is_base_of_v<Ord, T>, bool> {
-    return !(a < b) && a == b;
+    return !(a < b);
 }
