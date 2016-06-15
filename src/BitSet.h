@@ -61,6 +61,14 @@ public:
 
     ~BitSet() { _alloc.deallocate(_data); }
 
+    BitSet& operator=(BitSet b) {
+        using std::swap;
+        swap(_alloc, b._alloc);
+        swap(_size, b._size);
+        swap(_data, b._data);
+        return *this;
+    }
+
 public:
     std::size_t size() const noexcept { return _size; }
 
