@@ -8,9 +8,9 @@ struct Block : Eq {
     void* ptr;
     size_t size;
 
-    Block() : Block(nullptr, 0) {}
-    Block(void* ptr, size_t size) : ptr(ptr), size(size) {}
-    Block(Block&& b) : Block() { swap(*this, b); }
+    Block() noexcept : Block(nullptr, 0) {}
+    Block(void* ptr, size_t size) noexcept : ptr(ptr), size(size) {}
+    Block(Block&& b) noexcept : Block() { swap(*this, b); }
     Block(Block const&) = default;
     ~Block() = default;
 
@@ -19,14 +19,14 @@ struct Block : Eq {
         return *this;
     }
 
-    void reset() {
+    void reset() noexcept {
         ptr = nullptr;
         size = 0;
     }
 
-    operator bool() const { return ptr; }
+    operator bool() const noexcept { return ptr; }
 
-    bool operator==(const Block& other) const {
+    bool operator==(const Block& other) const noexcept {
         return other.ptr == ptr && size == other.size;
     }
 
