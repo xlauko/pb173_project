@@ -45,7 +45,8 @@ add_executable(unit_tests
     test/test_affix.cpp
     test/test_bitmapped.cpp
     test/test_statistic.cpp
-    test/test_complex.cpp)
+    test/test_complex.cpp
+    test/test_traits.cpp)
 target_link_libraries(unit_tests allocators)
 
 
