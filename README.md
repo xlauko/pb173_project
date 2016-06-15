@@ -12,3 +12,13 @@ Hlavní náplní projektu bude implementovat tyto alokátory: fallback allocator
 
 V rámci projektu provedeme také benchmark implementovaných alokátorů mezi sebou a benchmark oproti std::allocator<T> (či jiným běžně používaným) pro různě velké paměťové bloky.
 Jakožto vedlejší, nepovinný, cíl by bylo zajímavé provést benchmark tradičního pool allocatoru (se zabudovaným freelistem) oproti bitmapped_block allocatoru.
+
+#### How to compile
+
+```
+git submodule update --init --recursive
+mkdir build
+cd build
+ccmake ..
+make
+```
