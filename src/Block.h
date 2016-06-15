@@ -1,6 +1,6 @@
 #pragma once
 
-#include "type_classes.h"
+#include "traits.h"
 #include <memory>
 
 namespace allocators {

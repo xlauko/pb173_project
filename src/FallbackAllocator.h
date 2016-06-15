@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Block.h"
-#include "type_classes.h"
+#include "traits.h"
 
 namespace allocators {
 

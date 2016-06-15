@@ -14,7 +14,7 @@ ExternalProject_Add(google-benchmark
 
 
 add_library(allocators STATIC
-    src/type_classes
+    src/traits
     src/Allocators
     src/Block
     src/NullAllocator
