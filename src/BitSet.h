@@ -11,6 +11,12 @@ namespace detail {
         return static_cast<unsigned>(__builtin_clz(x));
 #elif _MSC_VER
         return static_cast<unsigned>(__lzcnt(x));
+#else
+#error Unsupported compiler
+        // The reasen for this is that I dont want people to have slow code. See
+        // https://en.wikipedia.org/wiki/Find_first_set#Tool_and_library_support
+        // for your specific intrinsic for your specific compiler. If and only
+        // if none exists then write trivial algorithm for count leading zeros.
 #endif
     }
 
@@ -19,6 +25,12 @@ namespace detail {
         return static_cast<unsigned>(__builtin_clzl(x));
 #elif _MSC_VER
         return static_cast<unsigned>(__lzcnt64(x));
+#else
+#error Unsupported compiler
+        // The reasen for this is that I dont want people to have slow code. See
+        // https://en.wikipedia.org/wiki/Find_first_set#Tool_and_library_support
+        // for your specific intrinsic for your specific compiler. If and only
+        // if none exists then write trivial algorithm for count leading zeros.
 #endif
     }
 
