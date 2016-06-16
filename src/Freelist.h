@@ -18,7 +18,7 @@ struct Freelist : Eq {
     }
 
     Freelist& operator=(const Freelist&) = delete;
-    Freelist& operator=(Freelist&&) = delete;
+    Freelist& operator=(Freelist&&) = default;
 
     ~Freelist() {
         while (_root) {
