@@ -31,9 +31,10 @@ template <size_t size, size_t alignment = 8> struct StackAllocator : Eq {
     }
 
     void deallocate(Block& blk) noexcept {
-        assert(isLast(blk));
-        _top = reinterpret_cast<char*>(blk.ptr);
-        blk.reset();
+        if (isLast(blk)) {
+            _top = reinterpret_cast<char*>(blk.ptr);
+            blk.reset();
+        }
     }
 
     bool owns(const Block& blk) const noexcept {
