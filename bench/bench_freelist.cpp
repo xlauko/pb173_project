@@ -7,13 +7,14 @@
 
 using namespace allocators;
 
-static void bench_freelist_alloc(benchmark::State& s) {
-    Freelist<Mallocator, 8, 4 * 1024> alloc;
+template < size_t size >
+void bench_freelist_alloc(benchmark::State& s) {
+    Freelist<Mallocator, size, size> alloc;
     std::array<Block, batch_size> blocks;
 
     while (s.KeepRunning()) {
         for (auto& blk : blocks) {
-            blk = alloc.allocate(s.range_x());
+            blk = alloc.allocate(size);
         }
 
         s.PauseTiming();
@@ -24,14 +25,15 @@ static void bench_freelist_alloc(benchmark::State& s) {
     }
 }
 
-static void bench_freelist_dealloc(benchmark::State& s) {
-    Freelist<Mallocator, 8, 4 * 1024> alloc;
+template < size_t size >
+void bench_freelist_dealloc(benchmark::State& s) {
+    Freelist<Mallocator, size, size > alloc;
     std::array<Block, batch_size> blocks;
 
     while (s.KeepRunning()) {
         s.PauseTiming();
         for (auto& blk : blocks) {
-            blk = alloc.allocate(s.range_x());
+            blk = alloc.allocate(size);
         }
         s.ResumeTiming();
 
@@ -41,5 +43,18 @@ static void bench_freelist_dealloc(benchmark::State& s) {
     }
 }
 
-BENCHMARK(bench_freelist_alloc)->Range(8, 1024 * 1024);
-BENCHMARK(bench_freelist_dealloc)->Range(8, 1024 * 1024);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 8);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 64);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 512);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 4*1024);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 32*1024);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 256*1024);
+BENCHMARK_TEMPLATE(bench_freelist_alloc, 1024*1024);
+
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 8);
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 64);
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 512);
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 4*1024);
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 32*1024);
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 256*1024);
+BENCHMARK_TEMPLATE(bench_freelist_dealloc, 1024*1024);
