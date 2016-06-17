@@ -11,7 +11,12 @@ template <typename Allocator, typename Prefix, typename Suffix = void>
 struct AffixAllocator : Eq {
 
     Block allocate(size_t n) noexcept {
-        return n == 0 ? Block{} : reduce(_allocator.allocate(alloc_size(n)));
+        if (n == 0) {
+            return Block{};
+        }
+        Block block = reduce(_allocator.allocate(alloc_size(n)));
+        block.size = block.ptr ? n : 0;
+        return block;
     }
 
     void deallocate(Block& blk) noexcept {
@@ -29,34 +34,44 @@ struct AffixAllocator : Eq {
     }
 
     Prefix* prefix(const Block& blk) {
-        //assert(owns(blk));
-        return blk ? reinterpret_cast<Prefix*>(static_cast<char*>(blk.ptr) -
-                                               prefix_size)
+        // assert(owns(blk));
+        return blk ? reinterpret_cast<Prefix*>(
+                static_cast<char*>(blk.ptr) - prefix_size -
+                (prefix_size + alignof(Prefix)) % 8)
                    : nullptr;
     }
 
     Suffix* suffix(const Block& blk) {
-        //assert(owns(blk));
+        // assert(owns(blk));
         return blk ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) +
-                                               blk.size)
+                                               blk.size +
+                                               (blk.size + 8) % alignof(Suffix))
                    : nullptr;
     }
 
 private:
     Allocator _allocator;
 
-    size_t alloc_size(size_t n) { return prefix_size + suffix_size + n; }
+    size_t alloc_size(size_t n) const { return n + addition(n); }
 
-    size_t prefix_size = size_trait<Prefix>::value;
+    const static size_t prefix_size = size_trait<Prefix>::value;
 
-    size_t suffix_size = size_trait<Suffix>::value;
+    const static size_t suffix_size = size_trait<Suffix>::value;
+
+    const static size_t data_dist =
+            prefix_size + ((prefix_size + alignof(Prefix)) % 8);
+
+    size_t addition(size_t n) const {
+        return prefix_size + ((prefix_size + alignof(Prefix)) % 8) +
+               suffix_size + ((n + 8) % alignof(Suffix));
+    }
 
     Block gain(const Block& blk) const {
         Block block;
         if (!blk)
             return block;
-        block.ptr = static_cast<char*>(blk.ptr) - prefix_size;
-        block.size = blk.size + prefix_size + suffix_size;
+        block.ptr = static_cast<char*>(blk.ptr) - data_dist;
+        block.size = alloc_size(blk.size);
         return block;
     }
 
@@ -64,8 +79,8 @@ private:
         Block block;
         if (!blk)
             return block;
-        block.ptr = static_cast<char*>(blk.ptr) + prefix_size;
-        block.size = blk.size - prefix_size - suffix_size;
+        block.ptr = static_cast<char*>(blk.ptr) + data_dist;
+        block.size = blk.size;
         return block;
     }
 };
