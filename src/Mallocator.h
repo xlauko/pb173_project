@@ -4,13 +4,15 @@
 
 namespace allocators {
 struct Mallocator : Eq {
-  Block allocate(size_t n) { return {::operator new(n), n}; }
+    Block allocate(size_t n) noexcept {
+        return {::operator new(n, std::nothrow), n};
+    }
 
-  void deallocate(Block &blk) noexcept {
-    ::operator delete(blk.ptr);
-    blk.reset();
-  }
+    void deallocate(Block& blk) noexcept {
+        ::operator delete(blk.ptr);
+        blk.reset();
+    }
 
-  bool operator==(Mallocator const &) const noexcept { return true; }
+    bool operator==(Mallocator const&) const noexcept { return true; }
 };
 } // namespace allocators
