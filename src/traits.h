@@ -33,3 +33,7 @@ auto operator>=(const T& a, const T& b)
         -> std::enable_if_t<std::is_base_of_v<Ord, T>, bool> {
     return !(a < b);
 }
+
+template <class E> auto to_underlying(E value) -> std::underlying_type_t<E> {
+    return static_cast<std::underlying_type_t<E>>(value);
+}
