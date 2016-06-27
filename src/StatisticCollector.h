@@ -4,7 +4,7 @@
 #include "Block.h"
 
 namespace allocators {
-typedef enum {
+enum class Options {
     numOwns = 1,
     numAllocate = 2,
     numAllocateOk = 4,
@@ -12,9 +12,9 @@ typedef enum {
     numAll = 10, // means allocations + deallocations
     bytesAllocated = 16,
     bytesHighTide = 32
-} Options;
+};
 
-template <typename Allocator, int Option = Options::numAllocate>
+template <typename Allocator, Options Option = Options::numAllocate>
 struct StatisticCollector : Eq {
 
     StatisticCollector() : _result(0) {}
@@ -56,19 +56,19 @@ private:
     size_t _result;
 
     void inc(Options option, const size_t& count) const {
-        if (option & Option) {
+        if (to_underlying(option) & to_underlying(Option)) {
             const_cast<size_t&>(count) = count + 1;
         }
     }
 
     void add(Options option, size_t& bytes, int value) const {
-        if (option & Option) {
+        if (to_underlying(option) & to_underlying(Option)) {
             bytes += value;
         }
     }
 
     void max(Options option, size_t& bites, size_t value) const {
-        if (option & Option) {
+        if (to_underlying(option) & to_underlying(Option)) {
             bites = bites > value ? bites : value;
         }
     }
