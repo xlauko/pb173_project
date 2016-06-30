@@ -2,6 +2,7 @@
 
 #include "Block.h"
 #include <cassert>
+#include <cstddef>
 
 namespace allocators {
 template <class T> struct size_trait { const static size_t value = sizeof(T); };
@@ -36,16 +37,14 @@ struct AffixAllocator : Eq {
     Prefix* prefix(const Block& blk) {
         // assert(owns(blk));
         return blk ? reinterpret_cast<Prefix*>(
-                static_cast<char*>(blk.ptr) - prefix_size -
-                (prefix_size + alignof(Prefix)) % 8)
+                static_cast<char*>(blk.ptr) - data_dist)
                    : nullptr;
     }
 
     Suffix* suffix(const Block& blk) {
         // assert(owns(blk));
         return blk ? reinterpret_cast<Suffix*>(static_cast<char*>(blk.ptr) +
-                                               blk.size +
-                                               (blk.size + 8) % alignof(Suffix))
+                                               blk.size +( alignof(Suffix) - ((blk.size + data_align) % alignof(Suffix))))
                    : nullptr;
     }
 
@@ -58,12 +57,24 @@ private:
 
     const static size_t suffix_size = size_trait<Suffix>::value;
 
-    const static size_t data_dist =
-            prefix_size + ((prefix_size + alignof(Prefix)) % 8);
+    const static size_t data_align = alignof(std::max_align_t);
 
+    //space we need to add behind prefix to have aligned data
+    const static size_t prefix_align_space = (data_align - ((prefix_size + alignof(Prefix)) % data_align));
+
+    //real distance between allocated memory and users data
+    const static size_t data_dist =
+            prefix_size + prefix_align_space;
+
+    //space we need to add behind data to have aligned suffix
+    size_t suffix_align_size(size_t data_size) const {
+        return ( alignof(Suffix) - ((data_size + data_align) % alignof(Suffix)));
+    }
+
+    //real addition needed
     size_t addition(size_t n) const {
-        return prefix_size + ((prefix_size + alignof(Prefix)) % 8) +
-               suffix_size + ((n + 8) % alignof(Suffix));
+        return prefix_size +  prefix_align_space /* space between prefix and data*/+
+               suffix_size + suffix_align_size(n); /* space between data and suffix */;
     }
 
     Block gain(const Block& blk) const {
