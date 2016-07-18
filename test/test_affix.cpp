@@ -8,7 +8,7 @@
 using namespace allocators;
 
 TEST_CASE("Basic") {
-    AffixAllocator<StackAllocator<20>, int, int> allocator;
+    AffixAllocator<StackAllocator<30>, int, int> allocator;
     Block blk1 = allocator.allocate(5);
     test_block(blk1, 5);
     *allocator.prefix(blk1) = 4;
