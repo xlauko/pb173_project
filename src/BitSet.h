@@ -12,11 +12,27 @@ namespace detail {
 #elif _MSC_VER
         return static_cast<unsigned>(__lzcnt(x));
 #else
-#error Unsupported compiler
-        // The reasen for this is that I dont want people to have slow code. See
-        // https://en.wikipedia.org/wiki/Find_first_set#Tool_and_library_support
-        // for your specific intrinsic for your specific compiler. If and only
-        // if none exists then write trivial algorithm for count leading zeros.
+#warning "CAUTION! Unsupported compiler! Slow trivial implmentation is used"
+        if (x == 0)
+            return 32;
+        unsigned n = 1;
+        if ((x & 0xffff0000) == 0) {
+            x <<= 16;
+            n += 16;
+        }
+        if ((x & 0xff000000) == 0) {
+            x <<= 8;
+            n += 8;
+        }
+        if ((x & 0xf0000000) == 0) {
+            x <<= 4;
+            n += 4;
+        }
+        if ((x & 0xc0000000) == 0) {
+            x <<= 2;
+            n += 2;
+        }
+        return (x & 0x80000000) ? n - 1 : n;
 #endif
     }
 
@@ -26,11 +42,31 @@ namespace detail {
 #elif _MSC_VER
         return static_cast<unsigned>(__lzcnt64(x));
 #else
-#error Unsupported compiler
-        // The reasen for this is that I dont want people to have slow code. See
-        // https://en.wikipedia.org/wiki/Find_first_set#Tool_and_library_support
-        // for your specific intrinsic for your specific compiler. If and only
-        // if none exists then write trivial algorithm for count leading zeros.
+#warning "CAUTION! Unsupported compiler! Slow trivial implmentation is used"
+        if (x == 0)
+            return 64;
+        unsigned n = 1;
+        if ((x & 0xffffffff00000000) == 0) {
+            x <<= 32;
+            n += 32;
+        }
+        if ((x & 0xffff000000000000) == 0) {
+            x <<= 16;
+            n += 16;
+        }
+        if ((x & 0xff00000000000000) == 0) {
+            x <<= 8;
+            n += 8;
+        }
+        if ((x & 0xf000000000000000) == 0) {
+            x <<= 4;
+            n += 4;
+        }
+        if ((x & 0xc000000000000000) == 0) {
+            x <<= 2;
+            n += 2;
+        }
+        return (x & 0x8000000000000000) ? n - 1 : n;
 #endif
     }
 
