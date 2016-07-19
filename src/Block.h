@@ -24,7 +24,7 @@ struct Block : Eq {
         size = 0;
     }
 
-    operator bool() const noexcept { return static_cast<bool>(ptr); }
+    operator bool() const noexcept { return ptr; }
 
     bool operator==(const Block& other) const noexcept {
         return other.ptr == ptr && size == other.size;
